@@ -145,6 +145,11 @@ const insertUpdate = async (dao, dataParam, pk, username, t) => {
   return e;
 };
 
+const bulkInsertUpdate = (dao, completedData, attributesToUpdate, t) => {
+  const attributes = attributesToUpdate.concat(['modifiedBy', 'modifiedDate']);
+  return dao.bulkCreate(completedData, { updateOnDuplicate: attributes, transaction: t });
+};
+
 const isEmptyObject = (obj) => {
   for (const key in obj) {
     // eslint-disable-next-line no-prototype-builtins
@@ -353,5 +358,6 @@ module.exports = {
   findAll,
   convertDateToAsiaTimezone,
   formatDate,
-  convertZoneAndFormatDate
+  convertZoneAndFormatDate,
+  bulkInsertUpdate
 };
