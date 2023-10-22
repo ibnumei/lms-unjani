@@ -1,10 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const model = sequelize.define('bookBean', {
-      id: {
+      id_book: {
         type: DataTypes.BIGINT,
         primaryKey: true,
         autoIncrement: true,
-        field: 'id',
+        field: 'id_book',
         allowNull: false
       },
       biblio_id: {
@@ -127,7 +127,9 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    model.associate = () => {
+    model.associate = ( {authorBean, itemBean} ) => {
+      model.hasManyAuthor = model.hasMany(authorBean, { as: 'authors', foreignKey: 'id_book', targetKey: 'id_book'});
+      model.hasManyItems = model.hasMany(itemBean, {as: 'items', foreignKey: 'id_book', targetKey: 'id_book'})
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy

@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       id_book: {
         type: DataTypes.BIGINT,
         field: 'id_book',
-        allowNull: false
+        allowNull: false,
+        reference: {
+          model: 'db_book',
+          key:  'id_book'
+        }
       },
       author_name: {
         type: DataTypes.STRING,
@@ -52,7 +56,8 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    model.associate = () => {
+    model.associate = (bookBean) => {
+      model.belongsToBoook  =  model.belonngsTo(bookBean,  { as: 'book', foreignKey: 'id_book', target_key: 'id_book'})
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy

@@ -7,5 +7,6 @@ const { fUserLogin } = require('../middleware/userLogin');
 /* GET users listing. */
 router.get('/book', fUserLogin, bookController.getBook);
 router.get('/book/:id', fUserLogin, bookController.getSingleBook);
+router.get('/book/syncBook', bookController.syncBook);
 
 module.exports = router;

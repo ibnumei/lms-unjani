@@ -7,9 +7,9 @@ const { memberBean } = require('../db/index');
 
 // Pada level Service, penambalian harus berupa real object, non promise
 
-class UserService {
+class MemberService {
   // static async getUser(userId) {
-  //   console.log('UserService.getUser', userId);
+  //   console.log('MemberService.getUser', userId);
   //   const where = {
   //     id: userId
   //   }
@@ -31,8 +31,7 @@ class UserService {
     let maxPage = 1000
     const gettersPromise = []
     for(currentPage; currentPage <= maxPage; currentPage++) {
-      console.log('currentPage', currentPage)
-        gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/member/${currentPage}/000SSFNNSA00124`))
+      gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/member/${currentPage}/000SSFNNSA00124`))
     }
         const resultPromise = await Promise.all(gettersPromise);
         let member = []
@@ -48,4 +47,4 @@ class UserService {
   }
 }
 
-module.exports = UserService;
+module.exports = MemberService;

@@ -21,6 +21,19 @@ class BookController {
       res.json({ success: false, message: 'Fail to get book', ex });
     }
   }
+
+  static async syncBook(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      await bookService.syncBook(transaction);
+      await transaction.commit();
+      res.json({ success: true});
+    } catch (ex) {
+      logError('BookController.syncBook', ex);
+      await transaction.rollback();
+      res.json({ success: false, message: 'Fail to get syncBook', ex });
+    }
+  }
 }
 
 module.exports =BookController;
