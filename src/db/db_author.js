@@ -56,8 +56,8 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    model.associate = (bookBean) => {
-      model.belongsToBoook  =  model.belonngsTo(bookBean,  { as: 'book', foreignKey: 'id_book', target_key: 'id_book'})
+    model.associate = ({bookBean}) => {
+      model.belongsToBoook  =  model.belongsTo(bookBean,  { as: 'book', foreignKey: 'id_book', target_key: 'id_book'})
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy

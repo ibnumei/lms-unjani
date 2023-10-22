@@ -1,6 +1,6 @@
 const { bookDao } = require('../dao/index');
 const { bookBean, itemBean, authorBean } = require('../db/index');
-
+const axios = require('axios');
 // Pada level Service, penambalian harus berupa real object, non promise
 
 class BookService {
@@ -22,7 +22,7 @@ class BookService {
     let maxPage = 2
     const gettersPromise = []
     for(currentPage; currentPage <= maxPage; currentPage++) {
-      gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/member/${currentPage}/000SSFNNSA00124`))
+      gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/biblio/${currentPage}/000SSFNNSAOO124`))
     }
       const resultPromise = await Promise.all(gettersPromise);
       let book = []
