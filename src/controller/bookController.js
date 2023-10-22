@@ -3,38 +3,38 @@ const { logError } = require('../util/ServerTool');
 const { sequelize } = require('../db');
 
 class BookController {
-  // static async getBook(req, res) {
-  //   try {
-  //     const data = await bookService.getBook();
-  //     res.json({ success: true, data });
-  //   } catch (ex) {
-  //     logError('BookController.getBook', ex);
-  //     res.json({ success: false, message: 'Fail to get book', ex });
-  //   }
-  // }
-
-  // static async getSingleBook(req, res) {
-  //   try {
-  //     const data = await bookService.getSingleBook(req.params.id);
-  //     res.json({ success: true, data });
-  //   } catch (ex) {
-  //     logError('BookController.getSingleBook', ex);
-  //     res.json({ success: false, message: 'Fail to get book', ex });
-  //   }
-  // }
-
-  static async syncBook(req, res) {
-    const transaction = await sequelize.transaction();
+  static async getBook(req, res) {
     try {
-      await bookService.syncBook(transaction);
-      await transaction.commit();
-      res.json({ success: true});
+      const data = await bookService.getBook();
+      res.json({ success: true, data });
     } catch (ex) {
-      logError('BookController.syncBook', ex);
-      await transaction.rollback();
-      res.json({ success: false, message: 'Fail to get syncBook', ex });
+      logError('BookController.getBook', ex);
+      res.json({ success: false, message: 'Fail to get book', ex });
     }
   }
+
+  static async getSingleBook(req, res) {
+    try {
+      const data = await bookService.getSingleBook(req.params.id);
+      res.json({ success: true, data });
+    } catch (ex) {
+      logError('BookController.getSingleBook', ex);
+      res.json({ success: false, message: 'Fail to get book', ex });
+    }
+  }
+
+  // static async syncBook(req, res) {
+  //   const transaction = await sequelize.transaction();
+  //   try {
+  //     await bookService.syncBook(transaction);
+  //     await transaction.commit();
+  //     res.json({ success: true});
+  //   } catch (ex) {
+  //     logError('BookController.syncBook', ex);
+  //     await transaction.rollback();
+  //     res.json({ success: false, message: 'Fail to get syncBook', ex });
+  //   }
+  // }
 }
 
 module.exports =BookController;
