@@ -13,7 +13,6 @@ const winston = require('./conf/winston');
 
 const routes = require('./src/route/index');
 
-const MemberService = require('./src/service/memberService');
 
 require('dotenv').config();
 
@@ -60,9 +59,6 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
-
-const memberService= new MemberService();
-await memberService.syncMember();
 
 // error handler
 // eslint-disable-next-line no-unused-vars

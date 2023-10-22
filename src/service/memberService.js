@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const {bulkInsertUpdate} = require('../util/ServerTool');
 const { memberBean } = require('../db/index');
-const { sequelize } = require('../db');
 
 
 
@@ -27,7 +26,7 @@ class UserService {
   //   return userDao.registerUser(payload, transaction)
   // }
 
-  static async syncMember(){
+  static async syncMember(transaction){
     // const currentPage = 1
     // const maxPage = 10
     // for(currentPage; currentPage <= maxPage; currentPage++) {
@@ -42,7 +41,6 @@ class UserService {
     //     })
     //     await bulkInsertUpdate(memberBean, dataMember, attributes, transaction)
     // }
-    const transaction = await sequelize.transaction();
     try {
       const result = await axios.get('http://library-lama.unjani.id/index.php?p=api/member/1/000SSFNNSA00124');
       const dataMember  =  result.data.data;
@@ -54,9 +52,8 @@ class UserService {
         return singleData;
       })
       await bulkInsertUpdate(memberBean, dataMember, attributes, transaction);
-      await transaction.commit();
+      return true;
     } catch(e) {
-      await transaction.rollback();
       throw new Error('Failed Sync Data', e);
     }
         
