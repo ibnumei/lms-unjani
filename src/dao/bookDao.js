@@ -1,13 +1,13 @@
-const { bookBean } = require('../db/index');
+const { bukuBean } = require('../db/index');
 const tool = require('../util/ServerTool');
 
 class BookDao {
   static getBook() {
-    return bookBean.findAll();
+    return bukuBean.findAll();
   }
 
   static getSingleBook(id) {
-    return bookBean.findOne({ where: { id } });
+    return bukuBean.findOne({ where: { id } });
   }
 }
 

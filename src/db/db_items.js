@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const model = sequelize.define('bukuBean', {
+    const model = sequelize.define('itemBean', {
       id: {
         type: DataTypes.BIGINT,
         primaryKey: true,
@@ -7,34 +7,24 @@ module.exports = (sequelize, DataTypes) => {
         field: 'id',
         allowNull: false
       },
-      stockBuku: {
+      id_book: {
+        type: DataTypes.BIGINT,
+        field: 'id_book',
+        allowNull: false
+      },
+      item_code: {
         type: DataTypes.STRING,
-        field: 'stockBuku',
+        field: 'item_code',
         allowNull: true
       },
-      lokasiBuku: {
+      inventory_code: {
         type: DataTypes.STRING,
-        field: 'lokasiBuku',
+        field: 'inventory_code',
         allowNull: true
       },
-      pengarang: {
-        type: DataTypes.STRING,
-        field: 'pengarang',
-        allowNull: true
-      },
-      penerbit: {
-        type: DataTypes.STRING,
-        field: 'penerbit',
-        allowNull: true
-      },
-      jenisBuku: {
-        type: DataTypes.STRING,
-        field: 'jenisBuku',
-        allowNull: true
-      },
-      tahunTerbit: {
-        type: DataTypes.STRING,
-        field: 'tahunTerbit',
+      stock: {
+        type: DataTypes.BIGINT,
+        field: 'stock',
         allowNull: true
       },
       isActive: {
@@ -63,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       }
     }, {
-      tableName: 'db_buku',
+      tableName: 'db_items',
       timestamps: false
     });
   
@@ -71,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-    model.attributes = ['id', 'stockBuku', 'lokasiBuku', 'pengarang', 'penerbit', 'jenisBuku', 'tahunTerbit', 'isActive'];
+    model.attributes = ['id', 'item_code', 'id_book', 'inventory_code', 'stock', 'isActive'];
   
     return model;
   };

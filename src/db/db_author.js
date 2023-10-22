@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const model = sequelize.define('bukuBean', {
+    const model = sequelize.define('authorBean', {
       id: {
         type: DataTypes.BIGINT,
         primaryKey: true,
@@ -7,34 +7,19 @@ module.exports = (sequelize, DataTypes) => {
         field: 'id',
         allowNull: false
       },
-      stockBuku: {
+      id_book: {
+        type: DataTypes.BIGINT,
+        field: 'id_book',
+        allowNull: false
+      },
+      author_name: {
         type: DataTypes.STRING,
-        field: 'stockBuku',
+        field: 'author_name',
         allowNull: true
       },
-      lokasiBuku: {
+      authority_type: {
         type: DataTypes.STRING,
-        field: 'lokasiBuku',
-        allowNull: true
-      },
-      pengarang: {
-        type: DataTypes.STRING,
-        field: 'pengarang',
-        allowNull: true
-      },
-      penerbit: {
-        type: DataTypes.STRING,
-        field: 'penerbit',
-        allowNull: true
-      },
-      jenisBuku: {
-        type: DataTypes.STRING,
-        field: 'jenisBuku',
-        allowNull: true
-      },
-      tahunTerbit: {
-        type: DataTypes.STRING,
-        field: 'tahunTerbit',
+        field: 'authority_type',
         allowNull: true
       },
       isActive: {
@@ -63,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       }
     }, {
-      tableName: 'db_buku',
+      tableName: 'db_author',
       timestamps: false
     });
   
@@ -71,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-    model.attributes = ['id', 'stockBuku', 'lokasiBuku', 'pengarang', 'penerbit', 'jenisBuku', 'tahunTerbit', 'isActive'];
+    model.attributes = ['id', 'id_book', 'author_name', 'authority_type', 'isActive'];
   
     return model;
   };
