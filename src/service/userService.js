@@ -1,15 +1,10 @@
 const bcrypt = require('bcrypt');
 const { userDao } = require('../dao/index');
 
-
-// Pada level Service, penambalian harus berupa real object, non promise
-
 class UserService {
-  /* ----------  User Management  ----------*/
-  static async getUser(userId) {
-    console.log('UserService.getUser', userId);
+  static async getUser(id) {
     const where = {
-      id: userId
+      id
     }
 
     return userDao.getUser(where);

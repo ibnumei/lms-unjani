@@ -1,14 +1,14 @@
-const { userBean } = require('../db/index');
+const { memberBean } = require('../db/index');
 const tool = require('../util/ServerTool');
 
 class UserDao {
 
   static registerUser(payload, transaction) {
-    return userBean.create(payload, {transaction});
+    return memberBean.create(payload, {transaction});
   }
 
   static getUser(where) {
-    return userBean.findOne({ 
+    return memberBean.findOne({ 
       where
     });
   }
@@ -25,7 +25,7 @@ class UserDao {
       modifiedBy: payload.nama,
       modifiedDate: new Date()
     };
-    return userBean.update(dataToUpdate, { where: { id: payload.id }, transaction });
+    return memberBean.update(dataToUpdate, { where: { id: payload.id }, transaction });
   }
 }
 

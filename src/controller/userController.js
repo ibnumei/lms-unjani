@@ -5,7 +5,7 @@ const { sequelize } = require('../db');
 class UserController {
   static async getUser(req, res) {
     try {
-      const data = await userService.getUser(req.params.userId);
+      const data = await userService.getUser(req.params.id);
       res.json({ success: true, data });
     } catch (ex) {
       logError('UserController.getUser', ex);
@@ -22,7 +22,7 @@ class UserController {
       res.json({ success: true, data });
     } catch (ex) {
       await transaction.rollback();
-      logError('UserController.getUser', ex);
+      logError('UserController.registerUser', ex);
       res.json({ success: false, message: 'Fail to create user', ex });
     }
   }
