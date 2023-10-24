@@ -1,15 +1,38 @@
 const { bookDao } = require('../dao/index');
 const { bookBean, itemBean, authorBean } = require('../db/index');
 const axios = require('axios');
-// Pada level Service, penambalian harus berupa real object, non promise
+const { Sequelize } = require('../db');
+const { Op } = Sequelize;
 
 class BookService {
-  /* ----------  User Management  ----------*/
-  static async getBook() {
-    console.log('BoookService.getBook');
+  static async getBook(page, size, title) {
+    const actualOffset = page - 1;
+    const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+    const { limit, offset } = this.getPagination(actualOffset, size);
+    const where = {
+      limit,
+      offset,
+      condition
+    }
 
-    return bookDao.getBook();
+    const resultBook = await bookDao.getBook(where);
+    return this.getPagingData(resultBook, page, limit);
   }
+
+  static getPagination(page, size) {
+    const limit = size ? +size : 10;
+    const offset = page ? page * limit : 0;
+  
+    return { limit, offset };
+  };
+
+  static getPagingData (data, page, limit) {
+    const { count: totalItems, rows: tutorials } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil(totalItems / limit);
+  
+    return { totalItems, tutorials, totalPages, currentPage };
+  };
 
   static async getSingleBook(id) {
     console.log('BookService.getSingleBook', id);

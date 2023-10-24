@@ -1,13 +1,18 @@
-const { bukuBean } = require('../db/index');
+const { bookBean } = require('../db/index');
 const tool = require('../util/ServerTool');
+const { Sequelize } = require('../db');
 
 class BookDao {
-  static getBook() {
-    return bukuBean.findAll();
+  static getBook(where) {
+    return bookBean.findAndCountAll({
+      limit: where.limit,
+      offset: where.offset,
+      where: where.condition
+    });
   }
 
   static getSingleBook(id) {
-    return bukuBean.findOne({ where: { id } });
+    return bookBean.findOne({ where: { id_book: id } });
   }
 }
 

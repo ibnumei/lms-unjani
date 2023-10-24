@@ -72,9 +72,9 @@ module.exports = (sequelize, DataTypes) => {
         field: 'image',
         allowNull: true
       },
-      clasification: {
+      classification: {
         type: DataTypes.STRING,
-        field: 'clasification',
+        field: 'classification',
         allowNull: true
       },
       spec_detail_info: {
