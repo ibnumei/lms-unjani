@@ -27,8 +27,8 @@ class MemberService {
   // }
 
   static async syncMember(transaction){
-    let currentPage = 901
-    let maxPage = 1000
+    let currentPage = 1001
+    let maxPage = 1100
     const gettersPromise = []
     for(currentPage; currentPage <= maxPage; currentPage++) {
       gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/member/${currentPage}/000SSFNNSA00124`))

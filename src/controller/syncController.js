@@ -1,4 +1,4 @@
-const { bookService, syncService } = require('../service/index');
+const { bookService, memberService } = require('../service/index');
 const { logError } = require('../util/ServerTool');
 const { sequelize } = require('../db');
 

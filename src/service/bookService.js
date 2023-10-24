@@ -18,8 +18,8 @@ class BookService {
   }
 
   static async syncBook(transaction){
-    let currentPage = 1
-    let maxPage = 2
+    let currentPage = 3
+    let maxPage = 4
     const gettersPromise = []
     for(currentPage; currentPage <= maxPage; currentPage++) {
       gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/biblio/${currentPage}/000SSFNNSAOO124`))
