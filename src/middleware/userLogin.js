@@ -4,7 +4,6 @@ const { userDao } = require('../dao/index');
 const { logError } = require('../util/ServerTool');
 
 const fUserLogin = async (req, res, next) => {
-  // { id: 6, username: 'btpnlos03.dev', role: 'SME', LOBName: 'SME', branchCode: '0006', salesOfficeCode: '10006', iat: 1568685176, expireDate:: 1568771576 }
 
   if (req.headers.token) {
     if (req.headers.token === 'k3mb4nggul4') {
@@ -28,7 +27,7 @@ const fUserLogin = async (req, res, next) => {
           regionCode: '8103',
           regionId: '35',
           nik: 'btpnlos03.dev',
-          expireDate: 1568720966
+          expireDateToken: 1568720966
         };
       }
       next();
@@ -36,7 +35,7 @@ const fUserLogin = async (req, res, next) => {
       console.log(`Token >>> [${req.headers.token}]`);
       req.decodedJwt = jwt.verify(req.headers.token, process.env.JWT_KEY);
 
-      const tokenExpired = req.decodedJwt.expireDate;
+      const tokenExpired = req.decodedJwt.expireDateToken;
       const userId = req.decodedJwt.id;
       const currentExpired = Math.floor(Date.now() / 1000);
 

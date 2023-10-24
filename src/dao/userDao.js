@@ -14,15 +14,10 @@ class UserDao {
   }
 
   static updateToken(payload, transaction) {
-    // return userBean.update({ token: payload.token }, {
-    //   where: {
-    //     id: payload.id,
-    //   },
-    // });
 
     const dataToUpdate = {
       token: payload.token,
-      modifiedBy: payload.nama,
+      modifiedBy: payload.modifiedBy,
       modifiedDate: new Date()
     };
     return memberBean.update(dataToUpdate, { where: { id: payload.id }, transaction });

@@ -12,25 +12,28 @@ class LoginService {
   static async login(body, transaction) {
     let token = {}
     const where = {
-      nama: body.nama,
+      member_name: body.nama,
       isActive: true
     }
     const user = await userDao.getUser(where)
-    console.log(bcrypt.compareSync(body.password, user.password))
     if (bcrypt.compareSync(body.password, user.password)) {
         token = jwt.sign({
             id: user.id,
-            nama: user.nama,
-            jurusan: user.jurusan,
-            email: user.email,
-            noHandphone: user.noHandphone,
-            statusAnggota:  user.statusAnggota,
-            expireDate: Math.floor(tomorrowStartOfDay().getTime() / 1000)
+            member_id: user.member_id,
+            member_name: user.member_name,
+            gender: user.gender,
+            member_type_name: user.member_type_name,
+            member_mail_address: user.member_mail_address,
+            member_email: user.member_email,
+            member_image: user.member_image,
+            pin: user.pin,
+            member_since_date: user.member_since_date,
+            expireDateToken: Math.floor(tomorrowStartOfDay().getTime() / 1000)
         }, process.env.JWT_KEY);
         const payload = {
           id: user.id,
-          nama: user.nama,
-          token: token
+          token: token,
+          modifiedBy: user.member_name
         }
         await userDao.updateToken(payload, transaction)
         return token
