@@ -35,8 +35,6 @@ class BookService {
   };
 
   static async getSingleBook(id) {
-    console.log('BookService.getSingleBook', id);
-
     return bookDao.getSingleBook(id);
   }
 

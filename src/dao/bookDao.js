@@ -1,4 +1,4 @@
-const { bookBean } = require('../db/index');
+const { bookBean, authorBean, itemBean } = require('../db/index');
 const tool = require('../util/ServerTool');
 const { Sequelize } = require('../db');
 
@@ -11,8 +11,21 @@ class BookDao {
     });
   }
 
-  static getSingleBook(id) {
-    return bookBean.findOne({ where: { id_book: id } });
+  static getSingleBook(id, transaction) {
+    return bookBean.findOne({ 
+      where: { id_book: id } ,
+      include: [
+        {
+          model: authorBean,
+          as: 'authors'
+        },
+        {
+          model: itemBean,
+          as: 'items'
+        }
+      ],
+      transaction
+    });
   }
 }
 

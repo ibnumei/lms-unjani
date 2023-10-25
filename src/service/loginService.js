@@ -40,6 +40,15 @@ class LoginService {
     }
     throw new Error('Nama or Password is wrong');
   }
+
+  static async logout(currentUser, transaction) {
+    const payload = {
+      id: currentUser.id,
+      token: null,
+      modifiedBy: currentUser.member_name
+    }
+    return userDao.updateToken(payload, transaction)
+  }
 }
 
 module.exports = LoginService;
