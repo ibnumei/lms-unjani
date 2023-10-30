@@ -17,6 +17,20 @@ class RentController {
       res.json({ success: false, message: 'Fail to search rent book', ex });
     }
   }
+
+  static async rentBook(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const payload = req.body;
+      const data = await rentService.rentBook(payload, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      await transaction.rollback();
+      logError('RentController.rentBook', ex);
+      res.json({ success: false, message: 'Fail to rentBook', ex });
+    }
+  }
 }
 
 module.exports =RentController;

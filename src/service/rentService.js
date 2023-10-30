@@ -5,7 +5,15 @@ const { Sequelize } = require('../db');
 
 class RentService {
   static async searchRentBook(title, itemCode, transaction) {
-    return rentDao.searchRentBook(title, itemCode, transaction);
+    let result = await rentDao.searchRentBook(title, itemCode, transaction);
+    let tempAuthor = '';
+    if(Object.keys(result.authors).length > 0)  {
+      result.authors.forEach((author) => {
+        tempAuthor = tempAuthor + `${author.author_name} `;
+      })
+    }
+    result.dataValues.fullAuthor = tempAuthor;
+    return result;
   }
 }
 
