@@ -12,6 +12,15 @@ module.exports = (sequelize, DataTypes) => {
         field: 'kode_pinjam',
         allowNull: false
       },
+      id_member: {
+        type: DataTypes.BIGINT,
+        field: 'id_member',
+        allowNull: false,
+        reference: {
+          model: 'db_member',
+          key:  'id'
+        }
+      },
       id_book: {
         type: DataTypes.BIGINT,
         field: 'id_book',
@@ -23,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       id_item_stock: {
         type: DataTypes.BIGINT,
-        field: 'id_book',
+        field: 'id_item_stock',
         allowNull: false,
         reference: {
-          model: 'db_book',
-          key:  'id_book'
+          model: 'db_item',
+          key:  'item_code'
         }
       },
       tgl_pinjam: {

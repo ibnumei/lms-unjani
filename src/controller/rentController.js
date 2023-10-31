@@ -22,7 +22,8 @@ class RentController {
     const transaction = await sequelize.transaction();
     try {
       const payload = req.body;
-      const data = await rentService.rentBook(payload, transaction);
+      const currentUser = req.decodedJwt;
+      const data = await rentService.rentBook(payload, currentUser, transaction);
       await transaction.commit();
       res.json({ success: true, data });
     } catch (ex) {
