@@ -46,7 +46,6 @@ class RentService {
     await rentDao.rentBook(newPayload, transaction)
     const newItemBook = clone(itemBook)
     const statements = []
-    console.log('newItemBook', newItemBook)
     newItemBook.forEach((data)=> {
       const newStock = data.stock - 1
       statements.push(rentDao.updateItems(newStock, data.item_code, transaction))
