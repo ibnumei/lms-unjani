@@ -7,7 +7,8 @@ class RentController {
   static async searchRentBook(req, res) {
     const transaction = await sequelize.transaction();
     try {
-      const { title, itemCode } = req.query;
+      const payload = req.body;
+      const { title,itemCode } = payload
       const data = await rentService.searchRentBook(title, itemCode, transaction);
       await transaction.commit();
       res.json({ success: true, data });
