@@ -15,6 +15,26 @@
 
 // Peging Mechanisme, untuk render table di ui
 const pagings = {
+  pagingPendingTaskMaintenance : {
+    select: `SELECT id, member_id, member_name, gender, member_type_name, member_mail_address, member_email, pin FROM db_member`,
+    count: `select count(*) from db_member`,
+    orderby: "id asc",
+    search: "",
+    columns:[
+        { id:"member_id", title: 'Member ID', sortable: false, align: 'left', type:"String", width: 200, column:"member_id" },
+        { id:"member_name", title: 'Member Name', sortable: false, align: 'left', type:"String", width: 200, column:"member_name"},
+        { id:"gender", title: 'Gender', sortable: false, align: 'left', type:"String", width: 200, column:"gender" },
+        { id:"member_type_name", title: 'Member Type', sortable: false, align: 'left', type:"String", width: 200, column:"member_type_name" },
+        { id:"member_mail_address", title: 'Member Mail Address', sortable: false, align: 'left', type:"String", width: 200, column:"member_mail_address" },
+        { id:"member_email", title: 'Member Email', sortable: false, align: 'left', type:"String", width: 200, column:"member_email" },
+        { id:"pin", title: 'PIN', sortable: false, align: 'left', type:"String", width: 200, column:"pin" }
+        // { id:"action", title: 'Action', sortable: false, align: 'center', type:"Button", width: 100, components:['View','Process','Continue'] }
+    ],
+    filters:[
+      { id:"member_id", column: "member_id"},
+      { id:"member_name", column: "member_name"},
+    ]
+  },
 };
 
 // Mechanimes untuk render selectBox di ui

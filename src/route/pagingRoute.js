@@ -5,8 +5,8 @@ const { fUserLogin } = require('../middleware/userLogin');
 const { pagingController } = require('../controller/index');
 
 // Pagination / Popup
-router.get('/paging/picker', fUserLogin, pagingController.getPicker);
-router.post('/paging/fetch', fUserLogin, pagingController.getPaging);
+router.get('/paging/picker', pagingController.getPicker);
+router.post('/paging/fetch', pagingController.getPaging);
 router.post('/paging/report', fUserLogin, pagingController.getReport);
 
 // Popup
