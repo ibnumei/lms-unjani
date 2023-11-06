@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
           key:  'id_book'
         }
       },
-      id_item_stock: {
+      item_code: {
         type: DataTypes.BIGINT,
         field: 'id_item_stock',
         allowNull: false,
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       status_pinjam: {
-        type: DataTypes.STRING,
+        type: DataTypes.BOOLEAN,
         field: 'status_pinjam',
         allowNull: true
       },
@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-    model.attributes = ['id', 'item_code', 'id_book', 'inventory_code', 'stock', 'isActive'];
+    model.attributes = ['id', 'kode_pinjam', 'id_member', 'id_book', 'item_code', 'tgl_pinjam', 'tgl_kembali','device_log', 'status_pinjam','location_order'];
   
     return model;
   };

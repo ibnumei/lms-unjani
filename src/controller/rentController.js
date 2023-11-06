@@ -30,7 +30,22 @@ class RentController {
     } catch (ex) {
       await transaction.rollback();
       logError('RentController.rentBook', ex);
-      res.json({ success: false, message: 'Fail to rentBook', ex });
+      res.json({ success: false, message: ex.message });
+    }
+  }
+
+  static async returnBook(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const payload = req.body;
+      const currentUser  = req.decodedJwt;
+      const data = await rentService.returnBook(payload, currentUser, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      await transaction.rollback();
+      logError('RentController.returnBook', ex);
+      res.json({ success: false, message: ex.message});
     }
   }
 }
