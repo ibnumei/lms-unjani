@@ -18,12 +18,15 @@ class RentService {
 
   static async rentBook(payload, currentUser, transaction) {
     const uuid = uuidv4();
+    if(payload.length > 2) {
+      throw new Error('Peminjaman tidak boleh lebih dari 2 buku');
+    }
     const newPayload = [
       {
         kode_pinjam: uuid,
         id_member:  currentUser.id,
         id_book: payload[0].id_book,
-        id_item_stock: payload[0].item_code,
+        item_code: payload[0].item_code,
         tgl_pinjam: new Date(),
         status_pinjam: true,
         createdBy: currentUser.member_name
@@ -32,26 +35,46 @@ class RentService {
         kode_pinjam: uuid,
         id_member:  currentUser.id,
         id_book: payload[1].id_book,
-        id_item_stock: payload[1].item_code,
+        item_code: payload[1].item_code,
         tgl_pinjam: new Date(),
         status_pinjam: true,
         createdBy: currentUser.member_name
       }
     ]
+    await rentDao.rentBook(newPayload, transaction);
+    const type = 'rent';
+    await this.updateItems(payload, type, transaction);
+    return uuid;
+  }
+
+  static async returnBook(payload, currentUser, transaction) {
+    const { kode_pinjam } = payload;
+    const where = {
+      kode_pinjam: kode_pinjam,
+      status_pinjam: true
+    }
+    const dataRentBook = await rentDao.searchRentData(where, transaction);
+    if(!dataRentBook.length) {
+      throw new Error('Data Tidak ditemukan atau status sudah dikembalikan');
+    }
+    const type = 'return'
+    await this.updateItems(dataRentBook, type, transaction)
+    return rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+  }
+
+  static async updateItems(payload, type, transaction) {
     let itemsCode = []
     payload.forEach((data) => {
       itemsCode.push(data.item_code)
     })
     const itemBook = await rentDao.searchItems(itemsCode)
-    await rentDao.rentBook(newPayload, transaction)
     const newItemBook = clone(itemBook)
     const statements = []
     newItemBook.forEach((data)=> {
-      const newStock = data.stock - 1
+      const newStock = type === 'rent' ? data.stock - 1 : data.stock + 1
       statements.push(rentDao.updateItems(newStock, data.item_code, transaction))
     })
     await Promise.all(statements);
-    return uuid;
   }
 }
 
