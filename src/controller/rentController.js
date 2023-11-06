@@ -9,7 +9,9 @@ class RentController {
     try {
       const payload = req.body;
       const { title,itemCode } = payload
-      const data = await rentService.searchRentBook(title, itemCode, transaction);
+      const whereBook =  { title: title };
+      const whereItems = { item_code: itemCode };
+      const data = await rentService.searchRentBook(whereBook, whereItems, transaction);
       await transaction.commit();
       res.json({ success: true, data });
     } catch (ex) {
@@ -45,6 +47,20 @@ class RentController {
     } catch (ex) {
       await transaction.rollback();
       logError('RentController.returnBook', ex);
+      res.json({ success: false, message: ex.message});
+    }
+  }
+
+  static async searchReturnBook(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const kode_pinjam = req.params.kodePinjam;
+      const data = await rentService.searchReturnBook(kode_pinjam, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      await transaction.rollback();
+      logError('RentController.searchReturnBook', ex);
       res.json({ success: false, message: ex.message});
     }
   }
