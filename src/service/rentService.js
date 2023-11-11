@@ -4,8 +4,8 @@ const {clone} = require('../util/ServerTool');
 
 
 class RentService {
-  static async searchRentBook(title, itemCode, transaction) {
-    let result = await rentDao.searchRentBook(title, itemCode, transaction);
+  static async searchRentBook(whereBook, whereItems, transaction) {
+    let result = await rentDao.searchRentBook(whereBook, whereItems, transaction);
     let tempAuthor = '';
     if(Object.keys(result.authors).length > 0)  {
       result.authors.forEach((author) => {
@@ -53,7 +53,8 @@ class RentService {
       kode_pinjam: kode_pinjam,
       status_pinjam: true
     }
-    const dataRentBook = await rentDao.searchRentData(where, transaction);
+    const attributes = ['kode_pinjam', 'item_code'];
+    const dataRentBook = await rentDao.searchRentData(where, transaction, attributes);
     if(!dataRentBook.length) {
       throw new Error('Data Tidak ditemukan atau status sudah dikembalikan');
     }
@@ -75,6 +76,26 @@ class RentService {
       statements.push(rentDao.updateItems(newStock, data.item_code, transaction))
     })
     await Promise.all(statements);
+  }
+
+  static async searchReturnBook(kode_pinjam, transaction) {
+    const where = {
+      kode_pinjam: kode_pinjam,
+      status_pinjam: true
+    }
+    const attributes = ['kode_pinjam', 'item_code', 'id_book'];
+    const dataRent = await rentDao.searchRentData(where, transaction, attributes);
+    if(!dataRent.length) {
+      throw new Error('Data Tidak ditemukan atau status sudah dikembalikan');
+    }
+    const book = []
+    for (const file of dataRent) {
+      const whereBook =  { id_book: file.id_book };
+      const whereItems = { item_code: file.item_code };
+      const tempBook = await this.searchRentBook(whereBook, whereItems, transaction);
+      book.push(tempBook)
+    }
+    return book;
   }
 }
 
