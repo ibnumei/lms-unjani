@@ -16,6 +16,7 @@ class LoginService {
       isActive: true
     }
     const user = await userDao.getUser(where)
+    const type = "Member";
     if (bcrypt.compareSync(body.password, user.password)) {
         token = jwt.sign({
             id: user.id,
@@ -28,6 +29,7 @@ class LoginService {
             member_image: user.member_image,
             pin: user.pin,
             member_since_date: user.member_since_date,
+            type,
             expireDateToken: Math.floor(tomorrowStartOfDay().getTime() / 1000)
         }, process.env.JWT_KEY);
         const payload = {
@@ -35,19 +37,46 @@ class LoginService {
           token: token,
           modifiedBy: user.member_name
         }
-        await userDao.updateToken(payload, transaction)
+        await userDao.updateToken(payload, transaction, type)
         return token
     }
     throw new Error('Nama or Password is wrong');
   }
 
   static async logout(currentUser, transaction) {
+    const { type } = currentUser
     const payload = {
       id: currentUser.id,
       token: null,
       modifiedBy: currentUser.member_name
     }
-    return userDao.updateToken(payload, transaction)
+    return userDao.updateToken(payload, transaction, type)
+  }
+
+  static async loginAdmin(body, transaction) {
+    let token = {}
+    const where = {
+      name: body.name,
+      isActive: true
+    }
+    const user = await userDao.getUserAdmin(where)
+    const type = "Admin"
+    if (bcrypt.compareSync(body.password, user.password)) {
+        token = jwt.sign({
+            id: user.id,
+            name: user.name,
+            type,
+            expireDateToken: Math.floor(tomorrowStartOfDay().getTime() / 1000)
+        }, process.env.JWT_KEY);
+        const payload = {
+          id: user.id,
+          token: token,
+          modifiedBy: user.name
+        }
+        await userDao.updateToken(payload, transaction, type)
+        return token
+    }
+    throw new Error('Nama or Password is wrong');
   }
 }
 
