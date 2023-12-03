@@ -20,11 +20,9 @@ class UserService {
   }
 
   static async updateUserAdmin(payload, decodedJwt, transaction) {
-    const { fullname, username, email, phone } = payload
+    const { fullname, username, email, phone, oldPassword, newPassword, confirmPassword } = payload
     const { type, id } = decodedJwt;
-    if (type !== 'ADMIN') {
-      throw new Error('Unauthorized');
-    }
+
     const data = {
       id,
       fullname,
@@ -32,6 +30,29 @@ class UserService {
       email,
       phone
     }
+
+    if (type !== 'ADMIN') {
+      throw new Error('Unauthorized');
+    }
+
+    if (newPassword) {
+      if (newPassword !== confirmPassword) {
+        throw new Error('Password tidak cocok');
+      }
+      const where = {
+        id,
+        isActive: true
+      }
+      const user = await userDao.getUserAdmin(where)
+      const validPassword = bcrypt.compareSync(oldPassword, user.password)
+      if (!validPassword) {
+        throw new Error('Password lama tidak sesuai');
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      data.password = hashedPassword;
+    }
+
     return userDao.updateUserAdmin(data, transaction)
   }
 }
