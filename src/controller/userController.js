@@ -26,6 +26,21 @@ class UserController {
       res.json({ success: false, message: 'Fail to create user', ex });
     }
   }
+
+  static async updateUserAdmin(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const body = req.body;
+      const decodedJwt = req.decodedJwt
+      const data = await userService.updateUserAdmin(body, decodedJwt, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      await transaction.rollback();
+      logError('UserController.registerUser', ex);
+      res.json({ success: false, message: 'Fail to create user', ex });
+    }
+  }
 }
 
 module.exports = UserController;
