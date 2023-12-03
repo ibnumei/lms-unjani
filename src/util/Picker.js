@@ -129,11 +129,87 @@ const pagings = {
       { id:"status_pinjam", column: "rent.status_pinjam"},
       { id:"location_order", column: "rent.location_order"}
     ]
+  },
+  pagingLatestRent : {
+    select: `
+    SELECT
+      rent.kode_pinjam,
+      rent.tgl_pinjam,
+      rent.createdBy,
+      CONCAT(
+        CASE DAYOFWEEK(rent.tgl_pinjam)
+          WHEN 1 THEN 'Minggu'
+          WHEN 2 THEN 'Senin'
+          WHEN 3 THEN 'Selasa'
+          WHEN 4 THEN 'Rabu'
+          WHEN 5 THEN 'Kamis'
+          WHEN 6 THEN 'Jumat'
+          WHEN 7 THEN 'Sabtu'
+        END,
+        ' - ',
+        LPAD(DAY(rent.tgl_pinjam), 2, '0'), ' - ',
+        LPAD(MONTH(rent.tgl_pinjam), 2, '0'), ' - ',
+        YEAR(rent.tgl_pinjam)
+      ) AS tanggalPinjam,
+      GROUP_CONCAT(
+        (SELECT book.title FROM db_book book WHERE book.id_book = rent.id_book )
+        SEPARATOR ' & ') AS titles
+    FROM
+      db_rent rent
+    GROUP BY
+      rent.kode_pinjam, rent.tgl_pinjam, rent.createdBy`,
+    count: `SELECT
+      COUNT(DISTINCT kode_pinjam)
+    FROM
+      db_rent rent`,
+    orderby: "rent.tgl_pinjam DESC",
+    search: "",
+    columns:[
+        { id:"createdBy", title: 'Nama', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
+        { id:"tanggalPinjam", title: 'Tanggal Pemimjaman', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
+        { id:"titles", title: 'Nama Buku', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
+    ],
+    filters:[
+    ]
   }
 };
 
 // Mechanimes untuk render selectBox di ui
 const dropdowns = {
+  chartRent: {
+    selectAll: `
+      SELECT 
+        months.month AS x,
+        COALESCE(COUNT(db_rent.tgl_pinjam), 0) AS y
+      FROM 
+          (SELECT 'Jan' AS month
+          UNION SELECT 'Feb' AS month
+          UNION SELECT 'Mar' AS month
+          UNION SELECT 'Apr' AS month
+          UNION SELECT 'May' AS month
+          UNION SELECT 'Jun' AS month
+          UNION SELECT 'Jul' AS month
+          UNION SELECT 'Aug' AS month
+          UNION SELECT 'Sep' AS month
+          UNION SELECT 'Oct' AS month
+          UNION SELECT 'Nov' AS month
+          UNION SELECT 'Dec' AS month) AS months
+      LEFT JOIN 
+          db_rent ON DATE_FORMAT(db_rent.tgl_pinjam, '%b') = months.month
+          AND YEAR(db_rent.tgl_pinjam) = YEAR(CURDATE())
+      GROUP BY 
+        months.month`
+  },
+  chartMostBookRent: {
+    selectAll: `
+      SELECT
+        book.title AS x ,
+        COUNT(rent.id_book) AS y
+      FROM db_rent rent
+      INNER JOIN db_book book ON book.id_book = rent.id_book
+      GROUP BY rent.id_book, book.title
+      limit 4`
+  }
 };
 
 // Harus terdapat id, code dan description
