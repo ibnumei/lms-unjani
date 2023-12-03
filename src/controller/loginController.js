@@ -31,6 +31,19 @@ class LoginController {
     }
   }
 
+  static async loginAdmin(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const data = await loginService.loginAdmin(req.body, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      logError('LoginController.login', ex);
+      await transaction.rollback();
+      res.json({ success: false, message: 'Fail to login Admin', ex });
+    }
+  }
+
 }
 
 module.exports = LoginController;
