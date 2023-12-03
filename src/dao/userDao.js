@@ -29,6 +29,13 @@ class UserDao {
       where
     });
   }
+
+  static insertUserAdmin(payload) {
+    return adminBean.create({
+      ...payload,
+      createdDate: new Date(),
+    });
+  }
 }
 
 module.exports = UserDao;

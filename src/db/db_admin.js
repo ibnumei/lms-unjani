@@ -7,9 +7,34 @@ module.exports = (sequelize, DataTypes) => {
         field: 'id_admin',
         allowNull: false
       },
-      name: {
+      fullname: {
         type: DataTypes.STRING,
-        field: 'name',
+        field: 'fullname',
+        allowNull: false
+      },
+      username: {
+        type: DataTypes.STRING,
+        field: 'username',
+        allowNull: false
+      },
+      email: {
+        type: DataTypes.STRING,
+        field: 'email',
+        allowNull: false
+      },
+      phone: {
+        type: DataTypes.STRING,
+        field: 'phone',
+        allowNull: true
+      },
+      password: {
+        type: DataTypes.STRING,
+        field: 'password',
+        allowNull: false
+      },
+      token: {
+        type: DataTypes.STRING,
+        field: 'token',
         allowNull: true
       },
       isActive: {
@@ -37,16 +62,6 @@ module.exports = (sequelize, DataTypes) => {
         field: 'createdBy',
         allowNull: true
       },
-      token: {
-        type: DataTypes.STRING,
-        field: 'token',
-        allowNull: true
-      },
-      password: {
-        type: DataTypes.STRING,
-        field: 'password',
-        allowNull: true
-      },
     }, {
       tableName: 'db_admin',
       timestamps: false
@@ -56,7 +71,15 @@ module.exports = (sequelize, DataTypes) => {
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-    // model.attributes = ['id', 'nama', 'jurusan', 'email', 'noHandphone', 'password', 'statusAnggota', 'isActive', 'token'];
+    model.attributes = [
+      'id', 
+      'fullname', 
+      'username', 
+      'email', 
+      'password', 
+      'token', 
+      'isActive'
+    ];
   
     return model;
   };

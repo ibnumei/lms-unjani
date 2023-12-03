@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const { userDao } = require('../dao/index');
 var jwt = require('jsonwebtoken');
@@ -56,15 +57,18 @@ class LoginService {
   static async loginAdmin(body, transaction) {
     let token = {}
     const where = {
-      name: body.name,
+      username: body.username,
       isActive: true
     }
     const user = await userDao.getUserAdmin(where)
-    const type = "Admin"
+    const type = "ADMIN"
     if (bcrypt.compareSync(body.password, user.password)) {
         token = jwt.sign({
             id: user.id,
-            name: user.name,
+            username: user.username,
+            email: user.email,
+            fullname: user.fullname,
+            phone: user.phone,
             type,
             expireDateToken: Math.floor(tomorrowStartOfDay().getTime() / 1000)
         }, process.env.JWT_KEY);
@@ -77,6 +81,22 @@ class LoginService {
         return token
     }
     throw new Error('Nama or Password is wrong');
+  }
+
+  static async registerAdmin(payload) {
+    const existingUser = await userDao.getUserAdmin({ 
+      username: payload.username
+    });
+    if (existingUser) {
+      throw new Error('Username already taken');
+    }
+    const hashedPassword = await bcrypt.hash(payload.password, 10);
+    const user = await userDao.insertUserAdmin({
+      ...payload,
+      password: hashedPassword,
+      isActive: false
+    });
+    return _.pick(user, ['id']);
   }
 }
 
