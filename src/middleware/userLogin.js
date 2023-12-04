@@ -32,7 +32,7 @@ const fUserLogin = async (req, res, next) => {
       }
       next();
     } else {
-      console.log(`Token >>> [${req.headers.token}]`);
+      // console.log(`Token >>> [${req.headers.token}]`);
       req.decodedJwt = jwt.verify(req.headers.token, process.env.JWT_KEY);
 
       const tokenExpired = req.decodedJwt.expireDateToken;
@@ -46,7 +46,7 @@ const fUserLogin = async (req, res, next) => {
           error: new Error('Token Expired')
         });
       } else {
-        console.log('token masih cukup')
+        // console.log('token masih cukup')
         const cacheId = `UserLoginCache_${userId}`;
 
         const cacheDateTime = userDao[cacheId] ? userDao[cacheId] : 0;
@@ -57,7 +57,12 @@ const fUserLogin = async (req, res, next) => {
             id: userId,
             isActive: true
           }
-          const user = await userDao.getUser(where);
+          let user = {}
+          if (req.decodedJwt.type === "Member") {
+            user = await userDao.getUser(where);
+          } else {
+            user = await userDao.getUserAdmin(where);
+          }
 
           if (user.token === req.headers.token) {
             userDao[cacheId] = (new Date()).getTime() + 30000;

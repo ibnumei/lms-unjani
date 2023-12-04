@@ -1,4 +1,4 @@
-const { memberBean } = require('../db/index');
+const { memberBean, adminBean } = require('../db/index');
 const tool = require('../util/ServerTool');
 
 class UserDao {
@@ -13,14 +13,21 @@ class UserDao {
     });
   }
 
-  static updateToken(payload, transaction) {
+  static updateToken(payload, transaction, type) {
 
     const dataToUpdate = {
       token: payload.token,
       modifiedBy: payload.modifiedBy,
       modifiedDate: new Date()
     };
-    return memberBean.update(dataToUpdate, { where: { id: payload.id }, transaction });
+    const typeTable = type === "Member" ? memberBean : adminBean;
+    return typeTable.update(dataToUpdate, { where: { id: payload.id }, transaction });
+  }
+
+  static getUserAdmin(where) {
+    return adminBean.findOne({
+      where
+    });
   }
 }
 
