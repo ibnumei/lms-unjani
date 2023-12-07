@@ -15,13 +15,13 @@ class UserDao {
 
   static updateToken(payload, transaction, type) {
 
-    const dataToUpdate = {
-      token: payload.token,
-      modifiedBy: payload.modifiedBy,
-      modifiedDate: new Date()
-    };
+    // const dataToUpdate = {
+    //   token: payload.token,
+    //   modifiedBy: payload.modifiedBy,
+    //   modifiedDate: new Date()
+    // };
     const typeTable = type === "Member" ? memberBean : adminBean;
-    return typeTable.update(dataToUpdate, { where: { id: payload.id }, transaction });
+    return typeTable.update(payload, { where: { id: payload.id }, transaction });
   }
 
   static getUserAdmin(where) {

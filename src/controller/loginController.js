@@ -44,6 +44,16 @@ class LoginController {
     }
   }
 
+  static async checkLogin(req, res) {
+    try {
+      const data = await loginService.checkLogin(req.body);
+      res.json({ success: true, data });
+    } catch (ex) {
+      logError('LoginController.checkLogin', ex);
+      res.json({ success: false, message: 'Fail to checkLogin', ex });
+    }
+  }
+
 }
 
 module.exports = LoginController;

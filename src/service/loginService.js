@@ -4,7 +4,6 @@ var jwt = require('jsonwebtoken');
 const { tomorrowStartOfDay } = require('../util/ServerTool');
 
 
-
 // Pada level Service, penambalian harus berupa real object, non promise
 
 class LoginService {
@@ -35,7 +34,13 @@ class LoginService {
         const payload = {
           id: user.id,
           token: token,
-          modifiedBy: user.member_name
+          modifiedBy: user.member_name,
+          modifiedDate: new Date()
+        }
+        if (!!body.firstLogin) {
+          payload.hasLoggedIn = true
+          payload.tgl_join = new Date()
+          payload.password = this.hashNewPassword(body)
         }
         await userDao.updateToken(payload, transaction, type)
         return token
@@ -77,6 +82,20 @@ class LoginService {
         return token
     }
     throw new Error('Nama or Password is wrong');
+  }
+
+  static async checkLogin(body){
+    const where = {
+      member_name: body.nama,
+      isActive: true
+    }
+    return userDao.getUser(where)
+  }
+
+  static hashNewPassword(body){
+    const saltRounds = 10;
+    const hashPassword = bcrypt.hashSync(body.newPassword, saltRounds);
+    return hashPassword;
   }
 }
 

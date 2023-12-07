@@ -112,6 +112,16 @@ module.exports = (sequelize, DataTypes) => {
       field: 'password',
       allowNull: true
     },
+    hasLoggedIn: {
+      type: DataTypes.BOOLEAN,
+      field: 'hasLoggedIn',
+      allowNull: true
+    },
+    tgl_join: {
+      type: DataTypes.DATE,
+      field: 'tgl_join',
+      allowNull: true
+    },
   }, {
     tableName: 'db_member',
     timestamps: false
