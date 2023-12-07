@@ -7,5 +7,6 @@ const { fUserLogin } = require('../middleware/userLogin');
 router.post('/login', loginController.login);
 router.post('/logout', fUserLogin, loginController.logout)
 router.post('/login-admin', loginController.loginAdmin)
+router.post('/register-admin', loginController.registerAdmin)
 
 module.exports = router;

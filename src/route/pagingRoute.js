@@ -13,7 +13,7 @@ router.post('/paging/report', fUserLogin, pagingController.getReport);
 router.post('/paging/fetchOne', fUserLogin, pagingController.getPopupOne);
 
 // Dropdown
-router.post('/paging/dropdown', fUserLogin, pagingController.getDropdown);
+router.post('/paging/dropdown', pagingController.getDropdown);
 router.post('/paging/dropdownData', fUserLogin, pagingController.getDropdownData);
 
 module.exports = router;

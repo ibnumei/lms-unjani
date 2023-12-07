@@ -29,6 +29,22 @@ class UserDao {
       where
     });
   }
+
+  static insertUserAdmin(payload) {
+    return adminBean.create({
+      ...payload,
+      createdDate: new Date(),
+    });
+  }
+
+  static updateUserAdmin(payload, transaction) {
+    return adminBean.update(payload, {
+      where: {
+        id: payload.id
+      },
+      transaction
+    });
+  }
 }
 
 module.exports = UserDao;
