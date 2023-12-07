@@ -16,23 +16,41 @@
 // Peging Mechanisme, untuk render table di ui
 const pagings = {
   pagingMemberList : {
-    select: `SELECT id, member_id, member_name, gender, member_type_name, member_mail_address, member_email, pin FROM db_member`,
+    select: `SELECT
+      id,
+      member_name,
+      pin,
+      tgl_join,
+      CONCAT(
+          CASE DAYOFWEEK(tgl_join)
+            WHEN 1 THEN 'Minggu'
+            WHEN 2 THEN 'Senin'
+            WHEN 3 THEN 'Selasa'
+            WHEN 4 THEN 'Rabu'
+            WHEN 5 THEN 'Kamis'
+            WHEN 6 THEN 'Jumat'
+            WHEN 7 THEN 'Sabtu'
+          END,
+          ' - ',
+          LPAD(DAY(tgl_join), 2, '0'), ' - ',
+          LPAD(MONTH(tgl_join), 2, '0'), ' - ',
+          YEAR(tgl_join)
+        ) AS tanggalJoin,
+        DATE_FORMAT(tgl_join,'%d %M %Y') AS tgl_join2
+        FROM
+      db_member`,
     count: `select count(*) from db_member`,
     orderby: "id asc",
     search: "",
     columns:[
-        { id:"member_id", title: 'Member ID', sortable: false, align: 'left', type:"String", width: 200, column:"member_id" },
         { id:"member_name", title: 'Member Name', sortable: false, align: 'left', type:"String", width: 200, column:"member_name"},
-        { id:"gender", title: 'Gender', sortable: false, align: 'left', type:"String", width: 200, column:"gender" },
-        { id:"member_type_name", title: 'Member Type', sortable: false, align: 'left', type:"String", width: 200, column:"member_type_name" },
-        { id:"member_mail_address", title: 'Member Mail Address', sortable: false, align: 'left', type:"String", width: 200, column:"member_mail_address" },
-        { id:"member_email", title: 'Member Email', sortable: false, align: 'left', type:"String", width: 200, column:"member_email" },
-        { id:"pin", title: 'PIN', sortable: false, align: 'left', type:"String", width: 200, column:"pin" }
+        { id:"pin", title: 'PIN', sortable: false, align: 'left', type:"String", width: 200, column:"pin" },
+        { id:"tgl_join2", title: 'Tanggal Join', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_join2" }
         // { id:"action", title: 'Action', sortable: false, align: 'center', type:"Button", width: 100, components:['View','Process','Continue'] }
     ],
     filters:[
       { id:"member_id", column: "member_id"},
-      { id:"member_name", column: "member_name"},
+      { id:"member_name", column: "member_name"}
     ]
   },
   pagingBookList : {
@@ -86,20 +104,26 @@ const pagings = {
   },
   pagingRentList : {
     select: `SELECT
-        rent.id,
-        rent.kode_pinjam,
-        member.member_name,
-        book.title,
-        items.inventory_code,
-        rent.tgl_pinjam,
-        rent.tgl_kembali,
-        rent.status_pinjam,
-        rent.location_order
-      FROM
-        db_rent rent 
-      INNER JOIN db_member member ON member.id = rent.id_member
-      INNER JOIN db_book book ON book.id_book = rent.id_book
-      INNER JOIN db_items items ON items.item_code = rent.id_item_stock`,
+          rent.id,
+          rent.kode_pinjam,
+          member.member_name,
+          book.title,
+          items.inventory_code,
+          rent.tgl_pinjam,
+          rent.tgl_kembali,
+          rent.status_pinjam,
+          rent.location_order,
+          DATE_FORMAT(rent.tgl_pinjam,'%d %M %Y') as tgl_pinjam_format,
+          DATE_FORMAT(rent.tgl_kembali,'%d %M %Y') as tgl_kembali_format,
+          CASE (rent.status_pinjam)
+            WHEN 1 THEN 'Aktif'
+            WHEN 0 THEN 'Done'
+          END as status_pinjam_format
+        FROM
+          db_rent rent 
+        INNER JOIN db_member member ON member.id = rent.id_member
+        INNER JOIN db_book book ON book.id_book = rent.id_book
+        INNER JOIN db_items items ON items.item_code = rent.id_item_stock`,
     count: `SELECT
         count(*)
       FROM
@@ -112,11 +136,11 @@ const pagings = {
     columns:[
         { id:"kode_pinjam", title: 'Kode Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
         { id:"member_name", title: 'Member Name', sortable: false, align: 'left', type:"String", width: 200, column:"member.member_name"},
-        { id:"title", title: 'Title Buku', sortable: false, align: 'left', type:"String", width: 200, column:"book.title" },
+        { id:"title", title: 'Judul Buku', sortable: false, align: 'left', type:"String", width: 200, column:"book.title" },
         { id:"inventory_code", title: 'Inventory Code', sortable: false, align: 'left', type:"String", width: 200, column:"items.inventory_code" },
-        { id:"tgl_pinjam", title: 'Tgl Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"rent.tgl_pinjam" },
-        { id:"tgl_kembali", title: 'Tgl Kembali', sortable: false, align: 'left', type:"String", width: 200, column:"rent.tgl_kembali" },
-        { id:"status_pinjam", title: 'Status Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"rent.status_pinjam" },
+        { id:"tgl_pinjam_format", title: 'Tgl Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_pinjam_format" },
+        { id:"tgl_kembali_format", title: 'Tgl Kembali', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_kembali_format" },
+        { id:"status_pinjam_format", title: 'Status Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"status_pinjam_format" },
         { id:"location_order", title: 'Location Order', sortable: false, align: 'left', type:"String", width: 200, column:"rent.location_order" }
     ],
     filters:[
