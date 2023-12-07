@@ -53,6 +53,19 @@ class LoginController {
       res.json({ success: false, message: 'Fail to checkLogin', ex });
     }
   }
+  
+  static async registerAdmin(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const data = await loginService.registerAdmin(req.body, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      logError('LoginController.registerAdmin', ex);
+      await transaction.rollback();
+      res.json({ success: false, message: 'Fail to register user', ex });
+    }
+  }
 
 }
 
