@@ -61,7 +61,7 @@ class RentDao {
 
   static returnBook(kode_pinjam, member_name, transaction) {
     return rentBean.update(
-      { status_pinjam: false, modifiedBy: member_name, modifiedDate: DATE.now },
+      { status_pinjam: false, modifiedBy: member_name, tgl_kembali: DATE.now },
       {
         where: {
           kode_pinjam
