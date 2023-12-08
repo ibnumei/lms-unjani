@@ -2,7 +2,6 @@ const { bookBean, itemBean, authorBean, rentBean } = require('../db/index');
 const {bulkInsertUpdate} = require('../util/ServerTool');
 const { Sequelize } = require('../db');
 const { Op } = require('sequelize');
-const { DATE } = require('sequelize');
 
 class RentDao {
   static searchRentBook(whereBook, whereItems, transaction) {
@@ -61,7 +60,7 @@ class RentDao {
 
   static returnBook(kode_pinjam, member_name, transaction) {
     return rentBean.update(
-      { status_pinjam: false, modifiedBy: member_name, tgl_kembali: DATE.now },
+      { status_pinjam: false, modifiedBy: member_name, tgl_kembali: new Date() },
       {
         where: {
           kode_pinjam
