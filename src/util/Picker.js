@@ -233,6 +233,17 @@ const dropdowns = {
       INNER JOIN db_book book ON book.id_book = rent.id_book
       GROUP BY rent.id_book, book.title
       limit 4`
+  },
+  barChartMostUserRent: {
+    selectAll:`
+    SELECT 
+      member.member_name AS x,
+      COUNT(rent.id_member) AS y
+    FROM db_rent rent
+    INNER JOIN db_member member on member.id = rent.id_member
+    GROUP BY id_member
+    ORDER BY y DESC
+    LIMIT 25`
   }
 };
 
