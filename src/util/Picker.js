@@ -204,7 +204,7 @@ const dropdowns = {
     selectAll: `
       SELECT 
         months.month AS x,
-        COALESCE(COUNT(db_rent.tgl_pinjam), 0) AS y
+        COALESCE(COUNT(rent.id), 0) AS y
       FROM 
           (SELECT 'Jan' AS month
           UNION SELECT 'Feb' AS month
@@ -218,11 +218,18 @@ const dropdowns = {
           UNION SELECT 'Oct' AS month
           UNION SELECT 'Nov' AS month
           UNION SELECT 'Dec' AS month) AS months
-      LEFT JOIN 
-          db_rent ON DATE_FORMAT(db_rent.tgl_pinjam, '%b') = months.month
-          AND YEAR(db_rent.tgl_pinjam) = YEAR(CURDATE())
-      GROUP BY 
-        months.month`
+      LEFT JOIN
+      (
+        SELECT *
+        FROM db_rent 
+        {where}
+      ) rent ON DATE_FORMAT(rent.tgl_pinjam, '%b') = months.month 
+      `,
+    groupBy: 'months.month',
+    custom: true,
+    filters: [
+      { id:"year", column: "YEAR(db_rent.tgl_pinjam)"},
+    ]
   },
   chartMostBookRent: {
     selectAll: `
@@ -230,21 +237,82 @@ const dropdowns = {
         book.title AS x ,
         COUNT(rent.id_book) AS y
       FROM db_rent rent
-      INNER JOIN db_book book ON book.id_book = rent.id_book
-      GROUP BY rent.id_book, book.title
-      limit 4`
+      INNER JOIN db_book book ON book.id_book = rent.id_book`,
+    groupBy: 'rent.id_book, book.title',
+    limit: '4',
+    filters: [
+      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
   },
   barChartMostUserRent: {
     selectAll:`
-    SELECT 
-      member.member_name AS x,
-      COUNT(rent.id_member) AS y
-    FROM db_rent rent
-    INNER JOIN db_member member on member.id = rent.id_member
-    GROUP BY id_member
-    ORDER BY y DESC
-    LIMIT 25`
-  }
+      SELECT 
+        member.member_name AS x,
+        COUNT(rent.id_member) AS y
+      FROM db_rent rent
+      INNER JOIN db_member member on member.id = rent.id_member`,
+    groupBy: 'id_member',
+    limit: 25,
+    filters: [
+      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
+  },
+  chartBookTransaction: {
+    selectAll: `
+      SELECT
+        'Total Pemimjaman' AS x ,
+        COUNT(rent.id) AS y
+      FROM db_rent rent
+      {where}
+      UNION
+      SELECT
+        title.x AS x,
+        COUNT(rents.id) AS y
+      FROM (SELECT 'Total Pengembalian' AS x) AS title
+      LEFT JOIN (
+        SELECT * FROM
+        db_rent rent
+        {where}
+      ) rents ON rents.status_pinjam = 0
+      GROUP BY title.x`,
+    custom: true,
+    filters: [
+      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
+  },
+  chartRentAndReturn: {
+    selectAll: `
+      SELECT
+          months.month AS x,
+          COALESCE(SUM(CASE WHEN rent.status_pinjam = 1 THEN 1 ELSE 0 END), 0) AS y,
+          COALESCE(SUM(CASE WHEN rent.status_pinjam = 0 THEN 1 ELSE 0 END), 0) AS y1,
+          'Peminjaman,Pengembalian' AS labels
+      FROM (
+          SELECT 'Jan' AS month
+          UNION SELECT 'Feb' AS month
+          UNION SELECT 'Mar' AS month
+          UNION SELECT 'Apr' AS month
+          UNION SELECT 'May' AS month
+          UNION SELECT 'Jun' AS month
+          UNION SELECT 'Jul' AS month
+          UNION SELECT 'Aug' AS month
+          UNION SELECT 'Sep' AS month
+          UNION SELECT 'Oct' AS month
+          UNION SELECT 'Nov' AS month
+          UNION SELECT 'Dec' AS month
+      ) AS months
+      LEFT JOIN (
+          SELECT *
+          FROM db_rent
+          {where}
+      ) rent ON DATE_FORMAT(rent.tgl_pinjam, '%b') = months.month 
+      `,
+    groupBy: 'months.month',
+    custom: true,
+    filters: [
+      { id:"year", column: "YEAR(db_rent.tgl_pinjam)"},
+    ]
+  },
 };
 
 // Harus terdapat id, code dan description
