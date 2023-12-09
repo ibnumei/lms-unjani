@@ -204,7 +204,7 @@ const dropdowns = {
     selectAll: `
       SELECT 
         months.month AS x,
-        COALESCE(COUNT(rent.tgl_pinjam), 0) AS y
+        COALESCE(COUNT(rent.id), 0) AS y
       FROM 
           (SELECT 'Jan' AS month
           UNION SELECT 'Feb' AS month
@@ -255,6 +255,62 @@ const dropdowns = {
     limit: 25,
     filters: [
       { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
+  },
+  chartBookTransaction: {
+    selectAll: `
+      SELECT
+        'Total Pemimjaman' AS x ,
+        COUNT(rent.id) AS y
+      FROM db_rent rent
+      {where}
+      UNION
+      SELECT
+        title.x AS x,
+        COUNT(rents.id) AS y
+      FROM (SELECT 'Total Pengembalian' AS x) AS title
+      LEFT JOIN (
+        SELECT * FROM
+        db_rent rent
+        {where}
+      ) rents ON rents.status_pinjam = 0
+      GROUP BY title.x`,
+    custom: true,
+    filters: [
+      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
+  },
+  chartRentAndReturn: {
+    selectAll: `
+      SELECT
+          months.month AS x,
+          COALESCE(SUM(CASE WHEN rent.status_pinjam = 1 THEN 1 ELSE 0 END), 0) AS y,
+          COALESCE(SUM(CASE WHEN rent.status_pinjam = 0 THEN 1 ELSE 0 END), 0) AS y1,
+          'Peminjaman,Pengembalian' AS labels
+      FROM (
+          SELECT 'Jan' AS month
+          UNION SELECT 'Feb' AS month
+          UNION SELECT 'Mar' AS month
+          UNION SELECT 'Apr' AS month
+          UNION SELECT 'May' AS month
+          UNION SELECT 'Jun' AS month
+          UNION SELECT 'Jul' AS month
+          UNION SELECT 'Aug' AS month
+          UNION SELECT 'Sep' AS month
+          UNION SELECT 'Oct' AS month
+          UNION SELECT 'Nov' AS month
+          UNION SELECT 'Dec' AS month
+      ) AS months
+      LEFT JOIN (
+          SELECT *
+          FROM db_rent
+          {where}
+      ) rent ON DATE_FORMAT(rent.tgl_pinjam, '%b') = months.month 
+      `,
+    groupBy: 'months.month',
+    custom: true,
+    filters: [
+      { id:"year", column: "YEAR(db_rent.tgl_pinjam)"},
     ]
   },
 };
