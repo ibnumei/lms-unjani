@@ -243,7 +243,20 @@ const dropdowns = {
     filters: [
       { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
     ]
-  }
+  },
+  barChartMostUserRent: {
+    selectAll:`
+      SELECT 
+        member.member_name AS x,
+        COUNT(rent.id_member) AS y
+      FROM db_rent rent
+      INNER JOIN db_member member on member.id = rent.id_member`,
+    groupBy: 'id_member',
+    limit: 25,
+    filters: [
+      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
+  },
 };
 
 // Harus terdapat id, code dan description
