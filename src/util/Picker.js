@@ -204,7 +204,7 @@ const dropdowns = {
     selectAll: `
       SELECT 
         months.month AS x,
-        COALESCE(COUNT(db_rent.tgl_pinjam), 0) AS y
+        COALESCE(COUNT(rent.tgl_pinjam), 0) AS y
       FROM 
           (SELECT 'Jan' AS month
           UNION SELECT 'Feb' AS month
@@ -218,11 +218,18 @@ const dropdowns = {
           UNION SELECT 'Oct' AS month
           UNION SELECT 'Nov' AS month
           UNION SELECT 'Dec' AS month) AS months
-      LEFT JOIN 
-          db_rent ON DATE_FORMAT(db_rent.tgl_pinjam, '%b') = months.month
-          AND YEAR(db_rent.tgl_pinjam) = YEAR(CURDATE())
-      GROUP BY 
-        months.month`
+      LEFT JOIN
+      (
+        SELECT *
+        FROM db_rent 
+        {where}
+      ) rent ON DATE_FORMAT(rent.tgl_pinjam, '%b') = months.month 
+      `,
+    groupBy: 'months.month',
+    custom: true,
+    filters: [
+      { id:"year", column: "YEAR(db_rent.tgl_pinjam)"},
+    ]
   },
   chartMostBookRent: {
     selectAll: `
@@ -230,9 +237,12 @@ const dropdowns = {
         book.title AS x ,
         COUNT(rent.id_book) AS y
       FROM db_rent rent
-      INNER JOIN db_book book ON book.id_book = rent.id_book
-      GROUP BY rent.id_book, book.title
-      limit 4`
+      INNER JOIN db_book book ON book.id_book = rent.id_book`,
+    groupBy: 'rent.id_book, book.title',
+    limit: '4',
+    filters: [
+      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+    ]
   }
 };
 

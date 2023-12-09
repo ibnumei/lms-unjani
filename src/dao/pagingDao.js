@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable no-restricted-syntax */
+const _ = require('lodash');
 const { Sequelize, sequelize } = require('../db/index');
 const { pagings, dropdowns, popups } = require('../util/Picker');
 
@@ -60,7 +61,24 @@ class PagingDao {
       where = ` where ${where.substring(4, where.length)}`;
     }
 
-    const query = picker.selectAll + where;
+    let orderBy = !!picker.orderby ? ` ORDER BY ${picker.orderBy} ` : '';
+
+    let groupBy = !!picker.groupBy ? ` GROUP BY ${picker.groupBy} ` : '';
+    
+    let limit = !!picker.limit ? ` LIMIT ${picker.limit} ` : '';
+
+    let pickerSelect = picker.selectAll
+
+
+    if (picker.custom) {
+      const regexScope = new RegExp(`{where}`,'g')
+      pickerSelect = pickerSelect.replace(regexScope, where)
+      where = ''
+    }
+
+    const query = pickerSelect + where + ` ${groupBy} ${orderBy} ${limit}`;
+
+    console.log(query)
 
     return sequelize.query(query, { type: Sequelize.QueryTypes.SELECT });
   }
