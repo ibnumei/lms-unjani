@@ -30,17 +30,29 @@ class RentService {
         tgl_pinjam: new Date(),
         status_pinjam: true,
         createdBy: currentUser.member_name
-      },
-      {
-        kode_pinjam: uuid,
-        id_member:  currentUser.id,
-        id_book: payload[1].id_book,
-        item_code: payload[1].item_code,
-        tgl_pinjam: new Date(),
-        status_pinjam: true,
-        createdBy: currentUser.member_name
       }
+      // {
+      //   kode_pinjam: uuid,
+      //   id_member:  currentUser.id,
+      //   id_book: payload[1].id_book,
+      //   item_code: payload[1].item_code,
+      //   tgl_pinjam: new Date(),
+      //   status_pinjam: true,
+      //   createdBy: currentUser.member_name
+      // }
     ]
+    if(payload.length > 1) {
+      const secondPayload = {
+          kode_pinjam: uuid,
+          id_member:  currentUser.id,
+          id_book: payload[1].id_book,
+          item_code: payload[1].item_code,
+          tgl_pinjam: new Date(),
+          status_pinjam: true,
+          createdBy: currentUser.member_name
+        }
+      newPayload.push(secondPayload)
+    }
     await rentDao.rentBook(newPayload, transaction);
     const type = 'rent';
     await this.updateItems(payload, type, transaction);
