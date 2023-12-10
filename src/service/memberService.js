@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const {bulkInsertUpdate} = require('../util/ServerTool');
 const { memberBean } = require('../db/index');
+const { userDao } = require('../dao/index');
 
 
 
@@ -45,6 +46,33 @@ class MemberService {
         await bulkInsertUpdate(memberBean, member, attributes, transaction)
         return;
   }
+
+  static async getMember(page, size) {
+    const actualOffset = page - 1;
+    const { limit, offset } = this.getPagination(actualOffset, size);
+    const where = {
+      limit,
+      offset,
+    }
+    const attributes = ['id', 'member_id', 'member_name', 'gender', 'member_type_name', 'member_mail_address', 'member_email', 'member_since_date',  'register_date', 'expire_date', 'member_notes', 'input_date', 'last_update', 'tgl_join']
+    const resultMember = await userDao.getMemberPagination(where, attributes);
+    return this.getPagingData(resultMember, page, limit);
+  }
+
+  static getPagination(page, size) {
+    const limit = size ? +size : 10;
+    const offset = page ? page * limit : 0;
+  
+    return { limit, offset };
+  };
+
+  static getPagingData (data, page, limit) {
+    const { count: totalItems, rows: members } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil(totalItems / limit);
+  
+    return { totalItems, members, totalPages, currentPage };
+  };
 }
 
 module.exports = MemberService;

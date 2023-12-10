@@ -45,6 +45,14 @@ class UserDao {
       transaction
     });
   }
+
+  static getMemberPagination(where, attributes) {
+    return memberBean.findAndCountAll({
+      limit: where.limit,
+      offset: where.offset,
+      attributes
+    });
+  }
 }
 
 module.exports = UserDao;
