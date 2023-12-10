@@ -64,6 +64,28 @@ class RentController {
       res.json({ success: false, message: ex.message});
     }
   }
+
+  static async getListTransaction(req, res) {
+    try {
+      const { page, size } = req.query;
+      const data = await rentService.getListTransaction(page, size);
+      res.json({ success: true, data });
+    } catch (ex) {
+      logError('MemberController.getListTransaction', ex);
+      res.json({ success: false, message: 'Fail to get getListTransaction', ex });
+    }
+  }
+
+  static async getReportTransaction(req, res) {
+    try {
+      const { year } = req.query;
+      const data = await rentService.getReportTransaction(year);
+      res.json({ success: true, data });
+    } catch (ex) {
+      logError('MemberController.getReportTransaction', ex);
+      res.json({ success: false, message: 'Fail to get getReportTransaction', ex });
+    }
+  }
 }
 
 module.exports =RentController;

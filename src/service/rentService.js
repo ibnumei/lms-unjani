@@ -97,6 +97,37 @@ class RentService {
     }
     return book;
   }
+
+  static async getListTransaction(page, size) {
+    const actualOffset = page - 1;
+    const { limit, offset } = this.getPagination(actualOffset, size);
+    const where = {
+      limit,
+      offset,
+    }
+    const resultMember = await rentDao.getListTransaction(where);
+    return this.getPagingData(resultMember, page, limit);
+  }
+
+  static getPagination(page, size) {
+    const limit = size ? +size : 10;
+    const offset = page ? page * limit : 0;
+  
+    return { limit, offset };
+  };
+
+  static getPagingData (data, page, limit) {
+    const { count: totalItems, rows: transactions } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil(totalItems / limit);
+  
+    // return { totalItems, transactions, totalPages, currentPage };
+    return data
+  };
+
+  static async getReportTransaction(year) {
+    return rentDao.getReportTransaction(year)
+  }
 }
 
 module.exports = RentService;

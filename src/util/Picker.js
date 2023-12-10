@@ -284,7 +284,7 @@ const dropdowns = {
     selectAll: `
       SELECT
           months.month AS x,
-          COALESCE(SUM(CASE WHEN rent.status_pinjam = 1 THEN 1 ELSE 0 END), 0) AS y,
+          count(rent.id) AS y,
           COALESCE(SUM(CASE WHEN rent.status_pinjam = 0 THEN 1 ELSE 0 END), 0) AS y1,
           'Peminjaman,Pengembalian' AS labels
       FROM (
