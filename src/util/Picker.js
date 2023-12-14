@@ -195,6 +195,36 @@ const pagings = {
     ],
     filters:[
     ]
+  },
+  pagingMemberRent : {
+    select: `
+    SELECT
+      ROW_NUMBER() OVER () AS nomor,
+      rent.id,
+      rent.id_book,
+      rent.id_member,
+      rent.status_pinjam,
+      (
+        CASE 
+          WHEN rent.status_pinjam = 0 THEN 'Sedang dipinjam'
+          WHEN rent.status_pinjam = 1 THEN 'Sudah dikembalikan'
+          ELSE ''
+        END
+      ) AS status_pinjam_deskripsi,
+      book.title
+    FROM db_rent rent
+    INNER JOIN db_book book ON book.id_book = rent.id_book`,
+    count: `select count(rent.id) FROM db_rent rent INNER JOIN db_book book ON book.id_book = rent.id_book`,
+    orderby: "id DESC",
+    search: "",
+    columns:[
+        { id:"nomor", title: 'No', sortable: false, align: 'left', type:"String", width: 200, column:"nomor"},
+        { id:"title", title: 'Nama Buku', sortable: false, align: 'left', type:"String", width: 200, column:"title" },
+        { id:"status_pinjam_deskripsi", title: 'Status', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_join2" }
+    ],
+    filters:[
+      { id:"id_member", column: "id_member"}
+    ]
   }
 };
 
