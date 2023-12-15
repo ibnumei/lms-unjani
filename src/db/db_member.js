@@ -122,6 +122,11 @@ module.exports = (sequelize, DataTypes) => {
       field: 'tgl_join',
       allowNull: true
     },
+    bebas_pustaka: {
+      type: DataTypes.BOOLEAN,
+      field: 'bebas_pustaka',
+      allowNull: true
+    },
   }, {
     tableName: 'db_member',
     timestamps: false
