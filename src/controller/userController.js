@@ -46,6 +46,20 @@ class UserController {
       });
     }
   }
+
+  static async setBebasPustaka(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const payload = req.body;
+      console.log('payload',payload)
+      const data = await userService.setBebasPustaka(payload, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (e) {
+      await transaction.rollback();
+      res.json({ success: false, message: 'Fail to set bebas pustaka user', e });
+    }
+  }
 }
 
 module.exports = UserController;

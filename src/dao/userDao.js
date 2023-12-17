@@ -1,5 +1,6 @@
 const { memberBean, adminBean } = require('../db/index');
 const tool = require('../util/ServerTool');
+const { Op } = require('sequelize');
 
 class UserDao {
 
@@ -51,6 +52,19 @@ class UserDao {
       limit: where.limit,
       offset: where.offset,
       attributes
+    });
+  }
+
+  static setBebasPustaka(idMembers, transaction) {
+    return memberBean.update({
+      bebas_pustaka: true
+    },{
+      where: {
+        id: {
+          [Op.in]: idMembers
+        }
+      },
+      transaction
     });
   }
 }

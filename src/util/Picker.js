@@ -205,8 +205,8 @@ const pagings = {
         bebas_pustaka,
         CASE
             WHEN bebas_pustaka = 1 THEN 'Tidak ada Peminjaman'
-            When bebas_pustaka is NULL THEN 'Tidak ada Aktivitas'
-            ELSE 'Ada Peminjaman'
+            When bebas_pustaka = 0 THEN 'Ada Peminjaman'
+            ELSE 'Tidak ada Aktivitas'
         END AS status
         FROM
             db_member`,

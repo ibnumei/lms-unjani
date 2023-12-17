@@ -32,7 +32,7 @@ const fUserLogin = async (req, res, next) => {
       }
       next();
     } else {
-      // console.log(`Token >>> [${req.headers.token}]`);
+      console.log(`Token >>> [${req.headers.token}]`);
       req.decodedJwt = jwt.verify(req.headers.token, process.env.JWT_KEY);
 
       const tokenExpired = req.decodedJwt.expireDateToken;

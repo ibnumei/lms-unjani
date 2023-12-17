@@ -55,6 +55,15 @@ class UserService {
 
     return userDao.updateUserAdmin(data, transaction)
   }
+
+  static async setBebasPustaka(payload, transaction) {
+    const idMembers = [];
+    payload.forEach((data) => {
+      idMembers.push(data.id);
+    })
+    console.log('test',idMembers);
+    return userDao.setBebasPustaka(idMembers, transaction);
+  }
 }
 
 module.exports = UserService;
