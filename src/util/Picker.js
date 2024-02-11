@@ -234,8 +234,8 @@ const pagings = {
       rent.status_pinjam,
       (
         CASE 
-          WHEN rent.status_pinjam = 0 THEN 'Sedang dipinjam'
-          WHEN rent.status_pinjam = 1 THEN 'Sudah dikembalikan'
+          WHEN rent.status_pinjam = 1 THEN 'Sedang dipinjam'
+          WHEN rent.status_pinjam = 0 THEN 'Sudah dikembalikan'
           ELSE ''
         END
       ) AS status_pinjam_deskripsi,
