@@ -291,6 +291,11 @@ const userRole = Object.freeze({
   RBL: 'RBL'
 });
 
+const itemStatus = Object.freeze({
+  AVAILABLE: 'Tersedia',
+  NOT_AVAILABLE: 'Tidak Tersedia'
+})
+
 module.exports = {
   lookup,
   definedName,
@@ -302,5 +307,6 @@ module.exports = {
   actionWfStatus,
   actionOpStatus,
   uploadType,
-  userRole
+  userRole,
+  itemStatus
 };

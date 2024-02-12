@@ -1,6 +1,7 @@
 const { rentDao } = require('../dao/index');
 const { v4: uuidv4 } = require('uuid');
 const {clone} = require('../util/ServerTool');
+const { itemStatus } = require('../util/Enums');
 
 
 class RentService {
@@ -84,8 +85,8 @@ class RentService {
     const newItemBook = clone(itemBook)
     const statements = []
     newItemBook.forEach((data)=> {
-      const newStock = type === 'rent' ? data.stock - 1 : data.stock + 1
-      statements.push(rentDao.updateItems(newStock, data.item_code, transaction))
+      const newStatus = type === 'rent' ? itemStatus.NOT_AVAILABLE : itemStatus.AVAILABLE
+      statements.push(rentDao.updateItems(newStatus, data.item_code, transaction))
     })
     await Promise.all(statements);
   }
