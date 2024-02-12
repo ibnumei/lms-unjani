@@ -17,7 +17,7 @@ class RentController {
     } catch (ex) {
       await transaction.rollback();
       logError('RentController.searchRentBook', ex);
-      res.json({ success: false, message: 'Fail to search rent book', ex });
+      res.json({ success: false, message: ex.message, ex });
     }
   }
 
