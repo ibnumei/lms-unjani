@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         field: 'inventory_code',
         allowNull: true
       },
+      status: {
+        type: DataTypes.STRING,
+        field: 'status',
+        allowNull: true
+      },
       stock: {
         type: DataTypes.BIGINT,
         field: 'stock',
@@ -66,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-    model.attributes = ['id', 'item_code', 'id_book', 'inventory_code', 'stock', 'isActive'];
+    model.attributes = ['id', 'item_code', 'id_book', 'inventory_code', 'status', 'stock', 'isActive'];
   
     return model;
   };
