@@ -75,14 +75,12 @@ class RentService {
 
       form.append('item_code[]', payload[1].item_code)
     }
-    await rentDao.rentBook(newPayload, transaction);
 
-    const formHeaders = form.getHeaders();
-    await axios.post(API_ROUTE('loaning'), form, {
-      headers: {
-        ...formHeaders
-      }
-    })
+    const pRentBook = rentDao.rentBook(newPayload, transaction);
+    const pSaveOldService = this.saveToOldService(form, 'loaning');
+
+    await Promise.all([pRentBook, pSaveOldService]);
+
     const type = 'rent';
     await this.updateItems(payload, type, transaction);
     return uuid;
@@ -101,7 +99,18 @@ class RentService {
     }
     const type = 'return'
     await this.updateItems(dataRentBook, type, transaction)
-    return rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+    const pReturnBook = rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+
+    const form = new FormData()
+    form.append('member_key', currentUser.member_id)
+    dataRentBook.forEach(rentBook => {
+      form.append('item_code[]', rentBook.item_code)
+    })
+
+    const pSaveOldService = this.saveToOldService(form, 'return');
+
+    await Promise.all([pReturnBook, pSaveOldService]);
+
   }
 
   static async updateItems(payload, type, transaction) {
@@ -168,6 +177,15 @@ class RentService {
 
   static async getReportTransaction(year) {
     return rentDao.getReportTransaction(year)
+  }
+
+  static async saveToOldService(form, type) {
+    const formHeaders = form.getHeaders();
+    return axios.post(API_ROUTE(type), form, {
+      headers: {
+        ...formHeaders
+      }
+    })
   }
 }
 
