@@ -231,6 +231,7 @@ const pagings = {
       rent.id,
       rent.id_book,
       rent.id_member,
+      rent.kode_pinjam,
       rent.status_pinjam,
       (
         CASE 
@@ -248,8 +249,9 @@ const pagings = {
     columns:[
         { id:"nomor", title: 'No', sortable: false, align: 'left', type:"String", width: 200, column:"nomor"},
         { id:"title", title: 'Nama Buku', sortable: false, align: 'left', type:"String", width: 200, column:"title" },
-        { id:"status_pinjam_deskripsi", title: 'Status', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_join2" }
-    ],
+        { id:"status_pinjam_deskripsi", title: 'Status', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_join2" },
+        { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['show-qr'] }
+      ],
     filters:[
       { id:"id_member", column: "id_member"}
     ]
