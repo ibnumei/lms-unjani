@@ -3,12 +3,24 @@ const FormData = require('form-data');
 const { rentDao } = require('../dao/index');
 const { v4: uuidv4 } = require('uuid');
 const { clone } = require('../util/ServerTool');
+const { itemStatus } = require('../util/Enums');
 
 const API_ROUTE = (type) => `https://deltalibrary.unjani.id/index.php?p=api/loan/${type}`
 
 class RentService {
-  static async searchRentBook(whereBook, whereItems, transaction) {
+  static async searchRentBook(whereBook, whereItems, transaction, fromReturn = false) {
     let result = await rentDao.searchRentBook(whereBook, whereItems, transaction);
+
+    if (!result) {
+      throw new Error('Fail to search rent book')
+    }
+
+    result.items.forEach(item => {
+      if (item.status === !itemStatus.AVAILABLE && !fromReturn) {
+        throw new Error('Buku yang dicari saat ini tidak tersedia')
+      }
+    })
+
     let tempAuthor = '';
     if (Object.keys(result.authors).length > 0) {
       result.authors.forEach((author) => {
@@ -101,12 +113,10 @@ class RentService {
     const newItemBook = clone(itemBook)
     const statements = []
     newItemBook.forEach((data) => {
-      const newStock = type === 'rent' ? data.stock - 1 : data.stock + 1
-      statements.push(rentDao.updateItems(newStock, data.item_code, transaction))
+      if (type === 'rent' && data.status !== itemStatus.AVAILABLE) {
+        throw new Error('Buku yang akan dipinjam saat ini tidak tersedia')
+      }
     })
-    await Promise.all(statements);
-
-    return
   }
 
   static async searchReturnBook(kode_pinjam, transaction) {
@@ -123,7 +133,7 @@ class RentService {
     for (const file of dataRent) {
       const whereBook = { id_book: file.id_book };
       const whereItems = { item_code: file.item_code };
-      const tempBook = await this.searchRentBook(whereBook, whereItems, transaction);
+      const tempBook = await this.searchRentBook(whereBook, whereItems, transaction, true);
       book.push(tempBook)
     }
     return book;
