@@ -64,7 +64,8 @@ const pagings = {
         items.item_code,
         items.inventory_code,
         items.stock,
-        author.full_author
+        author.full_author,
+        items.status
       FROM db_book book
         INNER JOIN db_items items on items.id_book = book.id_book
         INNER JOIN (
@@ -99,6 +100,7 @@ const pagings = {
       { id:"item_code", column: "items.item_code"},
       { id:"inventory_code", column: "items.inventory_code"},
       { id:"stock", column: "items.stock"},
+      { id:"status", column: "items.status"},
       { id:"full_author", column: "author.full_author"}
     ]
   },

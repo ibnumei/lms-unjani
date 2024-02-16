@@ -298,6 +298,10 @@ const jwtError = Object.freeze({
   }
 })
 
+const itemStatus = Object.freeze({
+  AVAILABLE: 'Tersedia'
+})
+
 module.exports = {
   lookup,
   definedName,
@@ -310,5 +314,6 @@ module.exports = {
   actionOpStatus,
   uploadType,
   userRole,
-  jwtError
+  jwtError,
+  itemStatus
 };

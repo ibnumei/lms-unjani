@@ -38,9 +38,9 @@ class RentDao {
     })
   }
 
-  static updateItems(stock, item_code, transaction) {
+  static updateItems(status, item_code, transaction) {
     return itemBean.update(
-      { stock: stock },
+      { status },
       {
         where: {
           item_code
