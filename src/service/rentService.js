@@ -16,7 +16,7 @@ class RentService {
     }
 
     result.items.forEach(item => {
-      if (item.status === !itemStatus.AVAILABLE && !fromReturn) {
+      if (item.status !== itemStatus.AVAILABLE && !fromReturn) {
         throw new Error('Buku yang dicari saat ini tidak tersedia')
       }
     })
