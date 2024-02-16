@@ -1,6 +1,6 @@
 const axios = require('axios');
 const FormData = require('form-data');
-const { rentDao } = require('../dao/index');
+const { rentDao, userDao } = require('../dao/index');
 const { v4: uuidv4 } = require('uuid');
 const { clone } = require('../util/ServerTool');
 const { itemStatus } = require('../util/Enums');
@@ -92,7 +92,7 @@ class RentService {
       kode_pinjam: kode_pinjam,
       status_pinjam: true
     }
-    const attributes = ['kode_pinjam', 'item_code'];
+    const attributes = ['kode_pinjam', 'item_code', 'id_member'];
     const dataRentBook = await rentDao.searchRentData(where, transaction, attributes);
     if (!dataRentBook.length) {
       throw new Error('Data Tidak ditemukan atau status sudah dikembalikan');
@@ -110,7 +110,8 @@ class RentService {
     const pSaveOldService = this.saveToOldService(form, 'return');
 
     await Promise.all([pReturnBook, pSaveOldService]);
-
+    await this.isMemberStillLoan(dataRentBook[0].id_member, transaction)
+    return
   }
 
   static async updateItems(payload, type, transaction) {
@@ -146,6 +147,28 @@ class RentService {
       book.push(tempBook)
     }
     return book;
+  }
+
+  static async isMemberStillLoan(id_member, transaction) {
+    const attributes = ['id','status_pinjam'];
+    const where = {
+      id_member,
+      status_pinjam: true
+    }
+    const dataRent = []
+    const memberRent = await rentDao.searchRentData(where, transaction, attributes)
+    if (!memberRent.length) {
+      return
+    }
+    for (const member of memberRent) {
+      if (member.status_pinjam === true) {
+        dataRent.push(member.id)
+      }
+    }
+    if (dataRent.length === 0) {
+      await userDao.setBebasPustaka([id_member], transaction)
+    }
+    return
   }
 
   static async getListTransaction(page, size) {

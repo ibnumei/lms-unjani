@@ -28,11 +28,11 @@ class MemberService {
   // }
 
   static async syncMember(transaction){
-    let currentPage = 1001
-    let maxPage = 1100
+    let currentPage = 1200
+    let maxPage = 1300
     const gettersPromise = []
     for(currentPage; currentPage <= maxPage; currentPage++) {
-      gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/member/${currentPage}/000SSFNNSA00124`))
+      gettersPromise.push(axios.get(`https://deltalibrary.unjani.id/index.php?p=api/member/${currentPage}/000SSFNNSA00124`))
     }
         const resultPromise = await Promise.all(gettersPromise);
         let member = []
