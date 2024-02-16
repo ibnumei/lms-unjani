@@ -30,8 +30,11 @@ class LoginService {
             pin: user.pin,
             member_since_date: user.member_since_date,
             type,
-            expireDateToken: Math.floor(tomorrowStartOfDay().getTime() / 1000)
-        }, process.env.JWT_KEY);
+            expireDateToken: '5m'
+        }, process.env.JWT_KEY,
+        {
+          expiresIn: '5m'
+        });
         const payload = {
           id: user.id,
           token: token,

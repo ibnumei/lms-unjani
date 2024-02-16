@@ -291,6 +291,13 @@ const userRole = Object.freeze({
   RBL: 'RBL'
 });
 
+const jwtError = Object.freeze({
+  TokenExpiredError: {
+    message: 'Webtoken is expired',
+    error: 'Token Expired'
+  }
+})
+
 const itemStatus = Object.freeze({
   AVAILABLE: 'Tersedia',
   NOT_AVAILABLE: 'Tidak Tersedia'
@@ -308,5 +315,6 @@ module.exports = {
   actionOpStatus,
   uploadType,
   userRole,
+  jwtError,
   itemStatus
 };
