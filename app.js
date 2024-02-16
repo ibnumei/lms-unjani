@@ -12,6 +12,7 @@ const { errorResponse } = require('./src/response/response-message');
 const winston = require('./conf/winston');
 
 const routes = require('./src/route/index');
+const { syncBookScheduler } = require('./src/util/scheduler')
 
 
 require('dotenv').config();
@@ -77,5 +78,7 @@ console.log('Server Up and Running');
 console.log('Project : lms-unjani');
 console.log('Port    : 3000');
 console.log('============================================');
+
+// setInterval(syncBookScheduler, 5000);
 
 module.exports = app;

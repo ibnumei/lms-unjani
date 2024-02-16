@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { bookDao } = require('../dao/index');
 const { bookBean, itemBean, authorBean } = require('../db/index');
 const axios = require('axios');
@@ -38,23 +39,44 @@ class BookService {
     return bookDao.getSingleBook(id);
   }
 
-  static async syncBook(transaction){
-    let currentPage = 3
-    let maxPage = 4
-    const gettersPromise = []
+  static async syncBook(transaction, seq = 1, limitpage = 1){
+    let currentPage = seq;
+    let maxPage = limitpage;
+    const gettersPromise = [];
+
+    const DELTA_LIBRARY_API = process.env.DELTA_LIBRARY_API;
+    const DELTA_LIBRARY_SECRET =  process.env.DELTA_LIBRARY_SECRET
+
     for(currentPage; currentPage <= maxPage; currentPage++) {
-      gettersPromise.push(axios.get(`http://library-lama.unjani.id/index.php?p=api/biblio/${currentPage}/000SSFNNSAOO124`))
+      gettersPromise.push(axios.get(`${DELTA_LIBRARY_API}/biblio/${currentPage}/${DELTA_LIBRARY_SECRET}`))
     }
-      const resultPromise = await Promise.all(gettersPromise);
-      let book = []
-      resultPromise.forEach((response) => {
-        book = [
-          ...book,
-          ...response.data.data
-        ]
-      })
-    // await bulkInsertUpdate(memberBean, member, attributes, transaction)
-    await bookBean.bulkCreate(book, { 
+
+    const resultPromise = await Promise.all(gettersPromise);
+    let book = []
+    resultPromise.forEach((response) => {
+      book = [
+        ...book,
+        ...response.data.data
+      ]
+    })
+
+    const biblio_id =  _.map(book, 'biblio_id');
+
+    const existingBook = await bookBean.findAll({
+      where: {
+        biblio_id: {
+          [Op.in]: biblio_id
+        }
+      },
+      attributes: ['biblio_id'],
+      raw: true,
+      transaction
+    })
+
+    let filteredBook = _.filter(book, obj => !existingBook.some(item => item.biblio_id === obj.biblio_id));
+    
+    filteredBook = _.uniqBy(filteredBook, 'biblio_id');
+    await bookBean.bulkCreate(filteredBook, {
       include: [
         {
           model: itemBean,
@@ -67,7 +89,7 @@ class BookService {
       ],
       transaction
     });
-    return;
+    return { book, lastPage: maxPage };
   }
 }
 

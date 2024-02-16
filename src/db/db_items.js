@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         field: 'inventory_code',
         allowNull: true
       },
+      status: {
+        type: DataTypes.STRING,
+        field: 'status',
+        allowNull: true
+      },
       stock: {
         type: DataTypes.BIGINT,
         field: 'stock',

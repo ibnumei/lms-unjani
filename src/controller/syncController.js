@@ -7,9 +7,9 @@ class SyncController {
   static async syncBook(req, res) {
     const transaction = await sequelize.transaction();
     try {
-      await bookService.syncBook(transaction);
+      const data = await bookService.syncBook(transaction);
       await transaction.commit();
-      res.json({ success: true});
+      res.json({ data, success: true});
     } catch (ex) {
       logError('SyncController.syncBook', ex);
       await transaction.rollback();
