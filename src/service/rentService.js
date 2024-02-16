@@ -13,11 +13,8 @@ class RentService {
     }
 
     result.items.forEach(item => {
-      if (item.status === itemStatus.NOT_AVAILABLE && !fromReturn) {
+      if (item.status === !itemStatus.AVAILABLE && !fromReturn) {
         throw new Error('Buku yang dicari saat ini tidak tersedia')
-      }
-      if (item.status === itemStatus.ON_LOAN && !fromReturn) {
-        throw new Error('Buku yang dicari saat ini sedang dipinjam')
       }
     })
 
@@ -99,10 +96,10 @@ class RentService {
     const newItemBook = clone(itemBook)
     const statements = []
     newItemBook.forEach((data) => {
-      if (type === 'rent' && data.status === itemStatus.NOT_AVAILABLE) {
+      if (type === 'rent' && data.status !== itemStatus.AVAILABLE) {
         throw new Error('Buku yang akan dipinjam saat ini tidak tersedia')
       }
-      const newStatus = type === 'rent' ? itemStatus.ON_LOAN : itemStatus.AVAILABLE
+
       statements.push(rentDao.updateItems(newStatus, data.item_code, transaction))
     })
     await Promise.all(statements);

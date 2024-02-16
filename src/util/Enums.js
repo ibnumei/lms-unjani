@@ -299,9 +299,7 @@ const jwtError = Object.freeze({
 })
 
 const itemStatus = Object.freeze({
-  AVAILABLE: 'Tersedia',
-  ON_LOAN: 'Sedang Dipinjam',
-  NOT_AVAILABLE: 'Tidak Tersedia'
+  AVAILABLE: 'Tersedia'
 })
 
 module.exports = {
