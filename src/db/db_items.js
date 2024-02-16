@@ -36,6 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         field: 'stock',
         allowNull: true
       },
+      status: {
+        type: DataTypes.STRING,
+        field: 'status',
+        allowNull: true
+      },
       isActive: {
         type: DataTypes.BOOLEAN,
         field: 'isActive',
@@ -71,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-    model.attributes = ['id', 'item_code', 'id_book', 'inventory_code', 'status', 'stock', 'isActive'];
+    model.attributes = ['id', 'item_code', 'id_book', 'inventory_code', 'stock', 'status', 'isActive'];
   
     return model;
   };
