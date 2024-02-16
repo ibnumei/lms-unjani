@@ -1,8 +1,11 @@
+const axios = require('axios');
+const FormData = require('form-data');
 const { rentDao } = require('../dao/index');
 const { v4: uuidv4 } = require('uuid');
 const { clone } = require('../util/ServerTool');
 const { itemStatus } = require('../util/Enums');
 
+const API_ROUTE = (type) => `https://deltalibrary.unjani.id/index.php?p=api/loan/${type}`
 
 class RentService {
   static async searchRentBook(whereBook, whereItems, transaction, fromReturn = false) {
@@ -53,6 +56,11 @@ class RentService {
       //   createdBy: currentUser.member_name
       // }
     ]
+
+    const form = new FormData()
+    form.append('member_key', currentUser.member_id)
+    form.append('item_code[]', payload[0].item_code)
+
     if (payload.length > 1) {
       const secondPayload = {
         kode_pinjam: uuid,
@@ -64,8 +72,15 @@ class RentService {
         createdBy: currentUser.member_name
       }
       newPayload.push(secondPayload)
+
+      form.append('item_code[]', payload[1].item_code)
     }
-    await rentDao.rentBook(newPayload, transaction);
+
+    const pRentBook = rentDao.rentBook(newPayload, transaction);
+    const pSaveOldService = this.saveToOldService(form, 'loaning');
+
+    await Promise.all([pRentBook, pSaveOldService]);
+
     const type = 'rent';
     await this.updateItems(payload, type, transaction);
     return uuid;
@@ -84,7 +99,18 @@ class RentService {
     }
     const type = 'return'
     await this.updateItems(dataRentBook, type, transaction)
-    return rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+    const pReturnBook = rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+
+    const form = new FormData()
+    form.append('member_key', currentUser.member_id)
+    dataRentBook.forEach(rentBook => {
+      form.append('item_code[]', rentBook.item_code)
+    })
+
+    const pSaveOldService = this.saveToOldService(form, 'return');
+
+    await Promise.all([pReturnBook, pSaveOldService]);
+
   }
 
   static async updateItems(payload, type, transaction) {
@@ -94,6 +120,7 @@ class RentService {
     })
     const itemBook = await rentDao.searchItems(itemsCode)
     const newItemBook = clone(itemBook)
+    const statements = []
     newItemBook.forEach((data) => {
       if (type === 'rent' && data.status !== itemStatus.AVAILABLE) {
         throw new Error('Buku yang akan dipinjam saat ini tidak tersedia')
@@ -150,6 +177,15 @@ class RentService {
 
   static async getReportTransaction(year) {
     return rentDao.getReportTransaction(year)
+  }
+
+  static async saveToOldService(form, type) {
+    const formHeaders = form.getHeaders();
+    return axios.post(API_ROUTE(type), form, {
+      headers: {
+        ...formHeaders
+      }
+    })
   }
 }
 
