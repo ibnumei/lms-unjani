@@ -94,15 +94,11 @@ class RentService {
     })
     const itemBook = await rentDao.searchItems(itemsCode)
     const newItemBook = clone(itemBook)
-    const statements = []
     newItemBook.forEach((data) => {
       if (type === 'rent' && data.status !== itemStatus.AVAILABLE) {
         throw new Error('Buku yang akan dipinjam saat ini tidak tersedia')
       }
-
-      statements.push(rentDao.updateItems(newStatus, data.item_code, transaction))
     })
-    await Promise.all(statements);
   }
 
   static async searchReturnBook(kode_pinjam, transaction) {
