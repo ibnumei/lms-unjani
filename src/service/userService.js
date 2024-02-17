@@ -62,7 +62,7 @@ class UserService {
       idMembers.push(data.id);
     })
     console.log('test',idMembers);
-    return userDao.setBebasPustaka(idMembers, transaction);
+    return userDao.setBebasPustaka(idMembers, transaction, true);
   }
 }
 

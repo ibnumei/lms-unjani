@@ -45,14 +45,15 @@ class RentDao {
         where: {
           item_code
         },
+        transaction
       },
-      transaction
     )
   }
 
   static searchRentData(where, transaction, attributes) {
     return rentBean.findAll({ 
       where ,
+      raw: true,
       attributes,
       transaction
     });
@@ -65,8 +66,8 @@ class RentDao {
         where: {
           kode_pinjam
         },
-      },
-      transaction
+        transaction
+      }
     )
   }
 
