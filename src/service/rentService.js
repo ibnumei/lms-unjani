@@ -76,10 +76,13 @@ class RentService {
       form.append('item_code[]', payload[1].item_code)
     }
 
-    const pRentBook = rentDao.rentBook(newPayload, transaction);
-    const pSaveOldService = this.saveToOldService(form, 'loaning');
+    const pRentBook = await rentDao.rentBook(newPayload, transaction);
+    // const pSaveOldService = await this.saveToOldService(form, 'loaning');
 
-    await Promise.all([pRentBook, pSaveOldService]);
+    // await Promise.all([pRentBook]);
+
+    //set bebas_pustaka false, specific member by id when rent books
+    await userDao.setBebasPustaka([currentUser.id], transaction, false)
 
     const type = 'rent';
     await this.updateItems(payload, type, transaction);
@@ -99,7 +102,7 @@ class RentService {
     }
     const type = 'return'
     await this.updateItems(dataRentBook, type, transaction)
-    const pReturnBook = rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+    const pReturnBook = await rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
 
     const form = new FormData()
     form.append('member_key', currentUser.member_id)
@@ -107,9 +110,9 @@ class RentService {
       form.append('item_code[]', rentBook.item_code)
     })
 
-    const pSaveOldService = this.saveToOldService(form, 'return');
+    // const pSaveOldService = this.saveToOldService(form, 'return');
 
-    await Promise.all([pReturnBook, pSaveOldService]);
+    // await Promise.all([pReturnBook]);
     await this.isMemberStillLoan(dataRentBook[0].id_member, transaction)
     return
   }
@@ -150,6 +153,7 @@ class RentService {
   }
 
   static async isMemberStillLoan(id_member, transaction) {
+    console.log('testis', id_member)
     const attributes = ['id','status_pinjam'];
     const where = {
       id_member,
@@ -157,18 +161,21 @@ class RentService {
     }
     const dataRent = []
     const memberRent = await rentDao.searchRentData(where, transaction, attributes)
+    console.log('testis2',memberRent)
     if (!memberRent.length) {
-      return
+      return userDao.setBebasPustaka([id_member], transaction, true)
     }
-    for (const member of memberRent) {
-      if (member.status_pinjam === true) {
-        dataRent.push(member.id)
-      }
-    }
-    if (dataRent.length === 0) {
-      await userDao.setBebasPustaka([id_member], transaction)
-    }
+    await userDao.setBebasPustaka([id_member], transaction, false)
     return
+    // for (const member of memberRent) {
+    //   if (member.status_pinjam === true) {
+    //     dataRent.push(member.id)
+    //   }
+    // }
+    // if (dataRent.length === 0) {
+    //   await userDao.setBebasPustaka([id_member], transaction, false)
+    // }
+    // return
   }
 
   static async getListTransaction(page, size) {

@@ -42,7 +42,7 @@ class RentController {
       const payload = req.body;
       const currentUser  = req.decodedJwt;
       const data = await rentService.returnBook(payload, currentUser, transaction);
-      await transaction.commit();
+      await transaction.rollback();
       res.json({ success: true, data });
     } catch (ex) {
       await transaction.rollback();

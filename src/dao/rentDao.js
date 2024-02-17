@@ -53,6 +53,7 @@ class RentDao {
   static searchRentData(where, transaction, attributes) {
     return rentBean.findAll({ 
       where ,
+      raw: true,
       attributes,
       transaction
     });

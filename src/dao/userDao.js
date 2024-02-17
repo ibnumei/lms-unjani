@@ -55,9 +55,9 @@ class UserDao {
     });
   }
 
-  static setBebasPustaka(idMembers, transaction) {
+  static setBebasPustaka(idMembers, transaction, value_bebas_pustaka) {
     return memberBean.update({
-      bebas_pustaka: true
+      bebas_pustaka: value_bebas_pustaka
     },{
       where: {
         id: {
