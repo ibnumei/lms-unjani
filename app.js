@@ -80,8 +80,6 @@ console.log('Project : lms-unjani');
 console.log('Port    : 3000');
 console.log('============================================');
 
-syncItemScheduler()
-
 // setInterval(syncBookScheduler, 5000);
 const itemSchedulerJob = cron.schedule('* 1 * * *', () => {
   syncItemScheduler();
