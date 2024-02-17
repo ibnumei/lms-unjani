@@ -45,8 +45,8 @@ class RentDao {
         where: {
           item_code
         },
+        transaction
       },
-      transaction
     )
   }
 
@@ -66,8 +66,8 @@ class RentDao {
         where: {
           kode_pinjam
         },
-      },
-      transaction
+        transaction
+      }
     )
   }
 
