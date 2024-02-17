@@ -150,14 +150,12 @@ class RentService {
   }
 
   static async isMemberStillLoan(id_member, transaction) {
-    console.log('testis', id_member)
     const attributes = ['id','status_pinjam'];
     const where = {
       id_member,
       status_pinjam: true
     }
     const memberRent = await rentDao.searchRentData(where, transaction, attributes)
-    console.log('testis2',memberRent)
     if (!memberRent.length) {
       return userDao.setBebasPustaka([id_member], transaction, true)
     }
