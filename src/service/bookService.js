@@ -6,9 +6,10 @@ const { Sequelize } = require('../db');
 const { Op } = Sequelize;
 
 class BookService {
-  static async getBook(page, size, title) {
+  static async getBook(page, size, title, sortBy, order) {
     const actualOffset = page - 1;
     const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+    const orders = sortBy ? [[sortBy, order]] : null;
     const { limit, offset } = this.getPagination(actualOffset, size);
     const where = {
       limit,
@@ -16,7 +17,7 @@ class BookService {
       condition
     }
 
-    const resultBook = await bookDao.getBook(where);
+    const resultBook = await bookDao.getBook(where, orders);
     return this.getPagingData(resultBook, page, limit);
   }
 

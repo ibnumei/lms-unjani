@@ -139,6 +139,15 @@ class RentDao {
     })
     return result
   }
+
+  static async getQrInfo(kode_pinjam, transaction) {
+    return rentBean.findOne({ 
+      where: { kode_pinjam },
+      raw: true,
+      attributes: ['kode_pinjam', 'tgl_pinjam', 'createdBy'],
+      transaction
+    });
+  }
 }
 
 module.exports = RentDao;

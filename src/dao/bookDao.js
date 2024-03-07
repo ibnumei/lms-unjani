@@ -3,11 +3,12 @@ const tool = require('../util/ServerTool');
 const { Sequelize } = require('../db');
 
 class BookDao {
-  static getBook(where) {
+  static getBook(where, order) {
     return bookBean.findAndCountAll({
       limit: where.limit,
       offset: where.offset,
-      where: where.condition
+      where: where.condition,
+      order
     });
   }
 

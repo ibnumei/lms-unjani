@@ -202,6 +202,10 @@ class RentService {
       }
     })
   }
+
+  static async getQrInfo(kode_pinjam, transaction) {
+    return rentDao.getQrInfo(kode_pinjam, transaction)
+  }
 }
 
 module.exports = RentService;

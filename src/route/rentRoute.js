@@ -10,4 +10,5 @@ router.put('/rent-book', fUserLogin, rentController.returnBook);
 router.get('/search-return-book/:kodePinjam', fUserLogin, rentController.searchReturnBook);
 router.get('/list-transaction', rentController.getListTransaction);
 router.get('/report-transaction', rentController.getReportTransaction);
+router.get('/qr-info/:kodePinjam', fUserLogin, rentController.getQrInfo);
 module.exports = router;
