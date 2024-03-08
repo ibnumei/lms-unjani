@@ -8,8 +8,8 @@ class RentController {
     const transaction = await sequelize.transaction();
     try {
       const payload = req.body;
-      const { title,itemCode } = payload
-      const whereBook =  { title: title };
+      const { title, itemCode } = payload
+      const whereBook = { title: title };
       const whereItems = { item_code: itemCode };
       const data = await rentService.searchRentBook(whereBook, whereItems, transaction);
       await transaction.commit();
@@ -40,14 +40,14 @@ class RentController {
     const transaction = await sequelize.transaction();
     try {
       const payload = req.body;
-      const currentUser  = req.decodedJwt;
+      const currentUser = req.decodedJwt;
       const data = await rentService.returnBook(payload, currentUser, transaction);
       await transaction.commit();
       res.json({ success: true, data });
     } catch (ex) {
       await transaction.rollback();
       logError('RentController.returnBook', ex);
-      res.json({ success: false, message: ex.message});
+      res.json({ success: false, message: ex.message });
     }
   }
 
@@ -61,7 +61,7 @@ class RentController {
     } catch (ex) {
       await transaction.rollback();
       logError('RentController.searchReturnBook', ex);
-      res.json({ success: false, message: ex.message});
+      res.json({ success: false, message: ex.message });
     }
   }
 
@@ -88,4 +88,4 @@ class RentController {
   }
 }
 
-module.exports =RentController;
+module.exports = RentController;
