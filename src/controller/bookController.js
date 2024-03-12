@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { bookService } = require('../service/index');
 const { logError } = require('../util/ServerTool');
 
@@ -5,7 +6,9 @@ class BookController {
   static async getBook(req, res) {
     try {
       const { page, size, title } = req.query;
-      const data = await bookService.getBook(page, size, title);
+      const sortBy = _.get(req, 'query.sortBy', null);
+      const order = _.get(req, 'query.order', 'ASC');
+      const data = await bookService.getBook(page, size, title, sortBy, order);
       res.json({ success: true, data });
     } catch (ex) {
       logError('BookController.getBook', ex);

@@ -86,6 +86,20 @@ class RentController {
       res.json({ success: false, message: 'Fail to get getReportTransaction', ex });
     }
   }
+
+  static async getQrInfo(req, res) {
+    const transaction = await sequelize.transaction();
+    try {
+      const kode_pinjam = req.params.kodePinjam;
+      const data = await rentService.getQrInfo(kode_pinjam, transaction);
+      await transaction.commit();
+      res.json({ success: true, data });
+    } catch (ex) {
+      await transaction.rollback();
+      logError('RentController.searchReturnBook', ex);
+      res.json({ success: false, message: ex.message});
+    }
+  }
 }
 
 module.exports =RentController;
