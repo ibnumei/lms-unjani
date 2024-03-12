@@ -88,9 +88,14 @@ class RentService {
   }
 
   static async returnBook(payload, currentUser, transaction) {
-    const { kode_pinjam } = payload;
+    const {
+      kode_pinjam,
+      id_item_stock
+    } = payload;
+    const { member_name } = currentUser
     const where = {
-      kode_pinjam: kode_pinjam,
+      kode_pinjam,
+      id_item_stock,
       status_pinjam: true
     }
     const attributes = ['kode_pinjam', 'item_code', 'id_member'];
@@ -98,9 +103,8 @@ class RentService {
     if (!dataRentBook.length) {
       throw new Error('Data Tidak ditemukan atau status sudah dikembalikan');
     }
-    const type = 'return'
-    // await this.updateItems(dataRentBook, type, transaction)
-    await rentDao.returnBook(kode_pinjam, currentUser.member_name, transaction);
+
+    await rentDao.returnBook(kode_pinjam, id_item_stock, member_name, transaction);
 
     const form = new FormData()
     form.append('member_key', currentUser.member_id)
@@ -150,7 +154,7 @@ class RentService {
   }
 
   static async isMemberStillLoan(id_member, transaction) {
-    const attributes = ['id','status_pinjam'];
+    const attributes = ['id', 'status_pinjam'];
     const where = {
       id_member,
       status_pinjam: true

@@ -1,16 +1,16 @@
 const { bookBean, itemBean, authorBean, rentBean, memberBean, sequelize } = require('../db/index');
-const {bulkInsertUpdate} = require('../util/ServerTool');
+const { bulkInsertUpdate } = require('../util/ServerTool');
 const { Sequelize } = require('../db');
 const { Op } = require('sequelize');
 
 class RentDao {
   static searchRentBook(whereBook, whereItems, transaction) {
-    return bookBean.findOne({ 
-      where: whereBook ,
+    return bookBean.findOne({
+      where: whereBook,
       include: [
         {
-            model: authorBean,
-            as: 'authors'
+          model: authorBean,
+          as: 'authors'
         },
         {
           model: itemBean,
@@ -24,12 +24,12 @@ class RentDao {
 
   static rentBook(newPayload, transaction) {
     const attributes = ['id', 'kode_pinjam', 'id_member', 'id_book', 'item_code', 'tgl_pinjam', 'status_pinjam', 'createdBy'];
-      return bulkInsertUpdate(rentBean, newPayload, attributes, transaction)
+    return bulkInsertUpdate(rentBean, newPayload, attributes, transaction)
   }
 
   static searchItems(itemsCode, transaction) {
     return itemBean.findAll({
-      where: {  
+      where: {
         item_code: {
           [Op.in]: itemsCode
         }
@@ -51,20 +51,25 @@ class RentDao {
   }
 
   static searchRentData(where, transaction, attributes) {
-    return rentBean.findAll({ 
-      where ,
+    return rentBean.findAll({
+      where,
       raw: true,
       attributes,
       transaction
     });
   }
 
-  static returnBook(kode_pinjam, member_name, transaction) {
+  static returnBook(kode_pinjam, id_item_stock, member_name, transaction) {
     return rentBean.update(
-      { status_pinjam: false, modifiedBy: member_name, tgl_kembali: new Date() },
+      {
+        status_pinjam: false,
+        modifiedBy: member_name,
+        tgl_kembali: new Date()
+      },
       {
         where: {
-          kode_pinjam
+          kode_pinjam,
+          id_item_stock
         },
         transaction
       }
@@ -90,7 +95,7 @@ class RentDao {
     inner join db_member member on member.id = rent.id_member
     inner join db_book book on book.id_book = rent.id_book
     LIMIT ${where.offset}, ${where.limit}`
-    const result  =  await sequelize.query(rawQuery, {
+    const result = await sequelize.query(rawQuery, {
       type: Sequelize.QueryTypes.SELECT
     })
     return result
@@ -134,7 +139,7 @@ class RentDao {
       ) rent ON DATE_FORMAT(rent.tgl_pinjam, '%b') = months.month 
         GROUP BY months.month
     `
-    const result  =  await sequelize.query(rawQuery, {
+    const result = await sequelize.query(rawQuery, {
       type: Sequelize.QueryTypes.SELECT
     })
     return result
