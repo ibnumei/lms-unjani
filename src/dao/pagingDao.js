@@ -237,6 +237,7 @@ class PagingDao {
           if (filter.opr === 'LESSTHEN' && filter.type === 'DATE') where += ` and date(${pickerfilter[0].column}) <= date('${filter.value}')`;
           if (filter.opr === 'IN' && filter.type === 'ARRAY') where += ` and ${pickerfilter[0].column} in (${filter.value})`;
           if (filter.opr === 'NOTIN' && filter.type === 'ARRAY') where += ` and ${pickerfilter[0].column} not in (${filter.value})`;
+          if (filter.opr === 'NOTSTARTWITH' && filter.type === 'STRING') where += " and "+pickerfilter[0].column+" not like '"+filter.value+"%'";
         }
       }
     }

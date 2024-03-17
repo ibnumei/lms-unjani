@@ -21,6 +21,7 @@ const pagings = {
       member_name,
       pin,
       tgl_join,
+      expire_date,
       CONCAT(
           CASE DAYOFWEEK(tgl_join)
             WHEN 1 THEN 'Minggu'
@@ -50,7 +51,8 @@ const pagings = {
     ],
     filters:[
       { id:"member_id", column: "member_id"},
-      { id:"member_name", column: "member_name"}
+      { id:"member_name", column: "member_name"},
+      { id:"expire_date", column: "expire_date"}
     ]
   },
   pagingBookList : {

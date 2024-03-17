@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const { userDao } = require('../dao/index');
 var jwt = require('jsonwebtoken');
 const { tomorrowStartOfDay } = require('../util/ServerTool');
+const { Op } = require('sequelize');
 
 
 // Pada level Service, penambalian harus berupa real object, non promise
@@ -13,7 +14,8 @@ class LoginService {
     let token = {}
     const where = {
       member_name: body.nama,
-      isActive: true
+      isActive: true,
+      expire_date: { [Op.notLike]: `0000-%` }
     }
     const user = await userDao.getUser(where)
     const type = "Member";
