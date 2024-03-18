@@ -14,7 +14,7 @@ class LoginService {
     let token = {}
     const where = {
       member_name: body.nama,
-      isActive: true,
+      // isActive: true,
       expire_date: { [Op.notLike]: `0000-%` }
     }
     const user = await userDao.getUser(where)
@@ -96,7 +96,7 @@ class LoginService {
   static async checkLogin(body){
     const where = {
       member_name: body.nama,
-      isActive: true
+      // isActive: true
     }
     return userDao.getUser(where)
   }
