@@ -13,9 +13,9 @@ class LoginService {
   static async login(body, transaction) {
     let token = {}
     const where = {
-      member_name: body.nama,
+      member_name: body.nama
       // isActive: true,
-      expire_date: { [Op.notLike]: `0000-%` }
+      // expire_date: { [Op.notLike]: `0000-%` }
     }
     const user = await userDao.getUser(where)
     const type = "Member";
@@ -32,6 +32,7 @@ class LoginService {
             pin: user.pin,
             member_since_date: user.member_since_date,
             type,
+            expire_date: user.expire_date,
             expireDateToken: '5m'
         }, process.env.JWT_KEY,
         {

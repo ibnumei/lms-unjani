@@ -51,8 +51,8 @@ const pagings = {
     ],
     filters:[
       { id:"member_id", column: "member_id"},
-      { id:"member_name", column: "member_name"},
-      { id:"expire_date", column: "expire_date"}
+      { id:"member_name", column: "member_name"}
+      // { id:"expire_date", column: "expire_date"}
     ]
   },
   pagingBookList : {
