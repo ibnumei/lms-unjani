@@ -3,8 +3,10 @@ const axios = require('axios');
 const { sequelize, schedulerBean } = require('../db');
 const {
   bookService: { syncBook },
-  itemService: { syncItem }
+  itemService: { syncItem },
+  memberService: { syncMember }
 } = require('../service');
+const { schedulerStatus } = require('../util/Enums')
 
 class Scheduler {
   static async syncBookScheduler() {
@@ -68,7 +70,7 @@ class Scheduler {
       });
 
       if (!scheduler) {
-        const { current_page, total_pages } = await Scheduler.getApiInfo();
+        const { current_page, total_pages } = await Scheduler.getApiInfo('biblio');
         scheduler = await schedulerBean.create({
           type: 'ITEM',
           seq: Number(current_page),
@@ -106,11 +108,82 @@ class Scheduler {
     }
   }
 
-  static async getApiInfo() {
+  static async syncMemberScheduler() {
+    const transaction = await sequelize.transaction();
+    let scheduler
+    try {
+      const { total_pages, total_rows } = await Scheduler.getApiInfo('member');
+
+      scheduler = await schedulerBean.findOne({
+        where: {
+          type: 'MEMBER',
+        },
+        transaction
+      });
+
+      if (scheduler && scheduler.totalRows < total_rows) {
+        await schedulerBean.update({
+          max: Number(total_pages),
+          totalRows: total_rows,
+          status: schedulerStatus.INPROGRESS
+        }, {
+          where: { id: scheduler.id },
+          transaction
+        })
+      }
+
+      if (!scheduler) {
+        scheduler = await schedulerBean.create({
+          type: 'MEMBER',
+          seq: Number(total_pages),
+          max: Number(total_pages),
+          totalRows: total_rows,
+          status: schedulerStatus.INPROGRESS
+        }, { transaction });
+      }
+
+      const { id, seq, max } = scheduler;
+      if (!(seq <= max)) {
+        await schedulerBean.update({
+          seq: max,
+          status: schedulerStatus.DONE
+        }, {
+          where: { id },
+          transaction
+        })
+
+        return transaction.commit()
+      };
+
+      const perpage = 100;
+
+      let limitpage = Math.min(seq + perpage - 1, max);
+      await syncMember(transaction, seq, limitpage);
+
+      await schedulerBean.update({ seq: seq + perpage }, { where: { id }, transaction });
+
+      const notes = `Sync member page ${seq}-${limitpage} /${max} ${parseFloat((seq / max) * 100).toFixed(2)}%`
+
+      await transaction.commit();
+      console.log('=====================================================================')
+      console.log(`>>>>>>>>>>>>>>>>>>> ${notes} >>>>>>>>>>>>>>>>>>>>>`);
+      console.log('=====================================================================')
+    } catch (error) {
+      console.log(error);
+      if (scheduler) {
+        await scheduler.update({
+          status: schedulerStatus.FAILED
+        })
+      }
+      await transaction.rollback();
+    }
+  }
+
+  static async getApiInfo(type) {
     const DELTA_LIBRARY_API = process.env.DELTA_LIBRARY_API;
     const DELTA_LIBRARY_SECRET = process.env.DELTA_LIBRARY_SECRET;
 
-    const info = await axios.get(`${DELTA_LIBRARY_API}/biblio/1/${DELTA_LIBRARY_SECRET}`);
+    const info = await axios.get(`${DELTA_LIBRARY_API}/${type}/1/${DELTA_LIBRARY_SECRET}`);
 
     return _.get(info, 'data');
   }

@@ -13,7 +13,7 @@ const winston = require('./conf/winston');
 const cron = require('node-cron')
 
 const routes = require('./src/route/index');
-const { syncBookScheduler, syncItemScheduler } = require('./src/util/scheduler')
+const { syncBookScheduler, syncItemScheduler, syncMemberScheduler } = require('./src/util/scheduler')
 
 
 require('dotenv').config();
@@ -84,7 +84,11 @@ console.log('============================================');
 const itemSchedulerJob = cron.schedule('* 1 * * *', () => {
   syncItemScheduler();
 });
+const memberSchedulerJob = cron.schedule('* 3 * * *', () => {
+  syncMemberScheduler();
+});
 
 itemSchedulerJob.start()
+memberSchedulerJob.start()
 
 module.exports = app;
