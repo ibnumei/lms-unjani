@@ -81,10 +81,10 @@ console.log('Port    : 3000');
 console.log('============================================');
 
 // setInterval(syncBookScheduler, 5000);
-const itemSchedulerJob = cron.schedule('* 1 * * *', () => {
+const itemSchedulerJob = cron.schedule('0 * * * *', () => {
   syncItemScheduler();
 });
-const memberSchedulerJob = cron.schedule('0 3 * * *', () => {
+const memberSchedulerJob = cron.schedule('0 7 * * *', () => {
   syncMemberScheduler();
 });
 
