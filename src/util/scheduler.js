@@ -168,6 +168,10 @@ class Scheduler {
       console.log('=====================================================================')
       console.log(`>>>>>>>>>>>>>>>>>>> ${notes} >>>>>>>>>>>>>>>>>>>>>`);
       console.log('=====================================================================')
+
+      setTimeout(() => {
+        return Scheduler.syncMemberScheduler();
+      }, 5000)
     } catch (error) {
       console.log(error);
       if (scheduler) {
