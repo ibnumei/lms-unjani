@@ -302,6 +302,12 @@ const itemStatus = Object.freeze({
   AVAILABLE: 'Tersedia'
 })
 
+const schedulerStatus = Object.freeze({
+  INPROGRESS: 'INPROGRESS',
+  DONE: 'DONE',
+  FAILED: 'FAILED'
+})
+
 module.exports = {
   lookup,
   definedName,
@@ -315,5 +321,6 @@ module.exports = {
   uploadType,
   userRole,
   jwtError,
-  itemStatus
+  itemStatus,
+  schedulerStatus
 };

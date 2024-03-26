@@ -31,17 +31,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       field: 'error',
       allowNull: true
-    }
+    },
+    totalRows: {
+      type: DataTypes.INTEGER,
+      field: 'totalRows',
+      allowNull: true
+    },
   }, {
     tableName: 'db_scheduler',
     timestamps: false
   });
 
-  model.associate = () => {
-  };
-
   // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-  model.attributes = ['id', 'type', 'status', 'seq', 'max', 'error'];
+  model.attributes = [
+    'id', 'type', 'status', 'seq', 'max',
+    'error', 'totalRows'
+  ];
 
   return model;
 };
