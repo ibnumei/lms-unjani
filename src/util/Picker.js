@@ -49,10 +49,10 @@ const pagings = {
       { id: "tgl_join2", title: 'Tanggal Join', sortable: false, align: 'left', type: "String", width: 200, column: "tgl_join2" }
       // { id:"action", title: 'Action', sortable: false, align: 'center', type:"Button", width: 100, components:['View','Process','Continue'] }
     ],
-    filters: [
-      { id: "member_id", column: "member_id" },
-      { id: "member_name", column: "member_name" },
-      { id: "expire_date", column: "expire_date" }
+    filters:[
+      { id:"member_id", column: "member_id"},
+      { id:"member_name", column: "member_name"}
+      // { id:"expire_date", column: "expire_date"}
     ]
   },
   pagingBookList: {
