@@ -84,7 +84,7 @@ console.log('============================================');
 const itemSchedulerJob = cron.schedule('* 1 * * *', () => {
   syncItemScheduler();
 });
-const memberSchedulerJob = cron.schedule('* 3 * * *', () => {
+const memberSchedulerJob = cron.schedule('0 3 * * *', () => {
   syncMemberScheduler();
 });
 
