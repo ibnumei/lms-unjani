@@ -13,7 +13,7 @@ const winston = require('./conf/winston');
 const cron = require('node-cron')
 
 const routes = require('./src/route/index');
-const { syncBookScheduler, syncItemScheduler } = require('./src/util/scheduler')
+const { syncBookScheduler, syncItemScheduler, syncMemberScheduler } = require('./src/util/scheduler')
 
 
 require('dotenv').config();
@@ -81,10 +81,14 @@ console.log('Port    : 3000');
 console.log('============================================');
 
 // setInterval(syncBookScheduler, 5000);
-const itemSchedulerJob = cron.schedule('* 1 * * *', () => {
+const itemSchedulerJob = cron.schedule('0 * * * *', () => {
   syncItemScheduler();
+});
+const memberSchedulerJob = cron.schedule('30 7 * * *', () => {
+  syncMemberScheduler();
 });
 
 itemSchedulerJob.start()
+memberSchedulerJob.start()
 
 module.exports = app;

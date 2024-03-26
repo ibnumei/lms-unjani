@@ -15,7 +15,7 @@
 
 // Peging Mechanisme, untuk render table di ui
 const pagings = {
-  pagingMemberList : {
+  pagingMemberList: {
     select: `SELECT
       id,
       member_name,
@@ -43,19 +43,19 @@ const pagings = {
     count: `select count(*) from db_member`,
     orderby: "id asc",
     search: "",
-    columns:[
-        { id:"member_name", title: 'Member Name', sortable: false, align: 'left', type:"String", width: 200, column:"member_name"},
-        { id:"pin", title: 'PIN', sortable: false, align: 'left', type:"String", width: 200, column:"pin" },
-        { id:"tgl_join2", title: 'Tanggal Join', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_join2" }
-        // { id:"action", title: 'Action', sortable: false, align: 'center', type:"Button", width: 100, components:['View','Process','Continue'] }
+    columns: [
+      { id: "member_name", title: 'Member Name', sortable: false, align: 'left', type: "String", width: 200, column: "member_name" },
+      { id: "pin", title: 'PIN', sortable: false, align: 'left', type: "String", width: 200, column: "pin" },
+      { id: "tgl_join2", title: 'Tanggal Join', sortable: false, align: 'left', type: "String", width: 200, column: "tgl_join2" }
+      // { id:"action", title: 'Action', sortable: false, align: 'center', type:"Button", width: 100, components:['View','Process','Continue'] }
     ],
-    filters:[
-      { id:"member_id", column: "member_id"},
-      { id:"member_name", column: "member_name"},
-      { id:"expire_date", column: "expire_date"}
+    filters: [
+      { id: "member_id", column: "member_id" },
+      { id: "member_name", column: "member_name" },
+      { id: "expire_date", column: "expire_date" }
     ]
   },
-  pagingBookList : {
+  pagingBookList: {
     select: `SELECT
         book.id_book,
         book.title,
@@ -82,31 +82,31 @@ const pagings = {
           ) as author on author.id_book = book.id_book`,
     orderby: "book.id_book asc",
     search: "",
-    columns:[
-        { id:"title", title: 'Title Buku', sortable: false, align: 'left', type:"String", width: 200, column:"book.title" },
-        { id:"isbn_issn", title: 'ISBN ISSN', sortable: false, align: 'left', type:"String", width: 200, column:"book.isbn_issn"},
-        { id:"publisher_name", title: 'Publisher', sortable: false, align: 'left', type:"String", width: 200, column:"book.publisher_name" },
-        { id:"publish_year", title: 'Publish Year', sortable: false, align: 'left', type:"String", width: 200, column:"book.publish_year" },
-        { id:"collation", title: 'Collation', sortable: false, align: 'left', type:"String", width: 200, column:"book.collation" },
-        { id:"item_code", title: 'Item Code', sortable: false, align: 'left', type:"String", width: 200, column:"items.item_code" },
-        { id:"inventory_code", title: 'Inventory Code', sortable: false, align: 'left', type:"String", width: 200, column:"items.inventory_code" },
-        { id:"stock", title: 'Stock', sortable: false, align: 'left', type:"String", width: 200, column:"items.stock" },
-        { id:"full_author", title: 'Author', sortable: false, align: 'left', type:"String", width: 200, column:"author.full_author" }
+    columns: [
+      { id: "title", title: 'Title Buku', sortable: false, align: 'left', type: "String", width: 200, column: "book.title" },
+      { id: "isbn_issn", title: 'ISBN ISSN', sortable: false, align: 'left', type: "String", width: 200, column: "book.isbn_issn" },
+      { id: "publisher_name", title: 'Publisher', sortable: false, align: 'left', type: "String", width: 200, column: "book.publisher_name" },
+      { id: "publish_year", title: 'Publish Year', sortable: false, align: 'left', type: "String", width: 200, column: "book.publish_year" },
+      { id: "collation", title: 'Collation', sortable: false, align: 'left', type: "String", width: 200, column: "book.collation" },
+      { id: "item_code", title: 'Item Code', sortable: false, align: 'left', type: "String", width: 200, column: "items.item_code" },
+      { id: "inventory_code", title: 'Inventory Code', sortable: false, align: 'left', type: "String", width: 200, column: "items.inventory_code" },
+      { id: "stock", title: 'Stock', sortable: false, align: 'left', type: "String", width: 200, column: "items.stock" },
+      { id: "full_author", title: 'Author', sortable: false, align: 'left', type: "String", width: 200, column: "author.full_author" }
     ],
-    filters:[
-      { id:"title", column: "book.title"},
-      { id:"isbn_issn", column: "book.isbn_issn"},
-      { id:"publisher_name", column: "book.publisher_name"},
-      { id:"publish_year", column: "book.publish_year"},
-      { id:"collation", column: "book.collation"},
-      { id:"item_code", column: "items.item_code"},
-      { id:"inventory_code", column: "items.inventory_code"},
-      { id:"stock", column: "items.stock"},
-      { id:"status", column: "items.status"},
-      { id:"full_author", column: "author.full_author"}
+    filters: [
+      { id: "title", column: "book.title" },
+      { id: "isbn_issn", column: "book.isbn_issn" },
+      { id: "publisher_name", column: "book.publisher_name" },
+      { id: "publish_year", column: "book.publish_year" },
+      { id: "collation", column: "book.collation" },
+      { id: "item_code", column: "items.item_code" },
+      { id: "inventory_code", column: "items.inventory_code" },
+      { id: "stock", column: "items.stock" },
+      { id: "status", column: "items.status" },
+      { id: "full_author", column: "author.full_author" }
     ]
   },
-  pagingRentList : {
+  pagingRentList: {
     select: `SELECT
           rent.id,
           rent.kode_pinjam,
@@ -137,28 +137,28 @@ const pagings = {
       INNER JOIN db_items items ON items.item_code = rent.id_item_stock`,
     orderby: "rent.id asc",
     search: "",
-    columns:[
-        { id:"kode_pinjam", title: 'Kode Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
-        { id:"member_name", title: 'Member Name', sortable: false, align: 'left', type:"String", width: 200, column:"member.member_name"},
-        { id:"title", title: 'Judul Buku', sortable: false, align: 'left', type:"String", width: 200, column:"book.title" },
-        { id:"inventory_code", title: 'Inventory Code', sortable: false, align: 'left', type:"String", width: 200, column:"items.inventory_code" },
-        { id:"tgl_pinjam_format", title: 'Tgl Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_pinjam_format" },
-        { id:"tgl_kembali_format", title: 'Tgl Kembali', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_kembali_format" },
-        { id:"status_pinjam_format", title: 'Status Pinjam', sortable: false, align: 'left', type:"String", width: 200, column:"status_pinjam_format" },
-        { id:"location_order", title: 'Location Order', sortable: false, align: 'left', type:"String", width: 200, column:"rent.location_order" }
+    columns: [
+      { id: "kode_pinjam", title: 'Kode Pinjam', sortable: false, align: 'left', type: "String", width: 200, column: "rent.kode_pinjam" },
+      { id: "member_name", title: 'Member Name', sortable: false, align: 'left', type: "String", width: 200, column: "member.member_name" },
+      { id: "title", title: 'Judul Buku', sortable: false, align: 'left', type: "String", width: 200, column: "book.title" },
+      { id: "inventory_code", title: 'Inventory Code', sortable: false, align: 'left', type: "String", width: 200, column: "items.inventory_code" },
+      { id: "tgl_pinjam_format", title: 'Tgl Pinjam', sortable: false, align: 'left', type: "String", width: 200, column: "tgl_pinjam_format" },
+      { id: "tgl_kembali_format", title: 'Tgl Kembali', sortable: false, align: 'left', type: "String", width: 200, column: "tgl_kembali_format" },
+      { id: "status_pinjam_format", title: 'Status Pinjam', sortable: false, align: 'left', type: "String", width: 200, column: "status_pinjam_format" },
+      { id: "location_order", title: 'Location Order', sortable: false, align: 'left', type: "String", width: 200, column: "rent.location_order" }
     ],
-    filters:[
-      { id:"kode_pinjam", column: "rent.kode_pinjam"},
-      { id:"member_name", column: "memberL.member_name"},
-      { id:"title", column: "book.title"},
-      { id:"inventory_code", column: "items.inventory_code"},
-      { id:"tgl_pinjam", column: "rent.tgl_pinjam"},
-      { id:"tgl_kembali", column: "rent.tgl_kembali"},
-      { id:"status_pinjam", column: "rent.status_pinjam"},
-      { id:"location_order", column: "rent.location_order"}
+    filters: [
+      { id: "kode_pinjam", column: "rent.kode_pinjam" },
+      { id: "member_name", column: "memberL.member_name" },
+      { id: "title", column: "book.title" },
+      { id: "inventory_code", column: "items.inventory_code" },
+      { id: "tgl_pinjam", column: "rent.tgl_pinjam" },
+      { id: "tgl_kembali", column: "rent.tgl_kembali" },
+      { id: "status_pinjam", column: "rent.status_pinjam" },
+      { id: "location_order", column: "rent.location_order" }
     ]
   },
-  pagingLatestRent : {
+  pagingLatestRent: {
     select: `
     SELECT
       rent.kode_pinjam,
@@ -192,15 +192,15 @@ const pagings = {
       db_rent rent`,
     orderby: "rent.tgl_pinjam DESC",
     search: "",
-    columns:[
-        { id:"createdBy", title: 'Nama', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
-        { id:"tanggalPinjam", title: 'Tanggal Pemimjaman', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
-        { id:"titles", title: 'Nama Buku', sortable: false, align: 'left', type:"String", width: 200, column:"rent.kode_pinjam" },
+    columns: [
+      { id: "createdBy", title: 'Nama', sortable: false, align: 'left', type: "String", width: 200, column: "rent.kode_pinjam" },
+      { id: "tanggalPinjam", title: 'Tanggal Pemimjaman', sortable: false, align: 'left', type: "String", width: 200, column: "rent.kode_pinjam" },
+      { id: "titles", title: 'Nama Buku', sortable: false, align: 'left', type: "String", width: 200, column: "rent.kode_pinjam" },
     ],
-    filters:[
+    filters: [
     ]
   },
-  pagingBebasPustaka : {
+  pagingBebasPustaka: {
     select: `
       SELECT 
         id,
@@ -217,18 +217,18 @@ const pagings = {
     count: `SELECT COUNT(id) FROM db_member`,
     orderby: "id ASC",
     search: "",
-    columns:[
-      { id: 'checkbox', title: '', sortable: false, align: 'center', type: 'String', thStyle: { minWidth: '5px', border: '.5px solid #fff' }, width: 20, components: ['checkbox']},
-      { id:"member_name", title: 'Member Name', sortable: false, align: 'left', type:"String", width: 200, column:"member_name" },
-      { id:"status", title: 'Status Perpustakaan', sortable: false, align: 'left', type:"String", width: 200, column:"status" },
+    columns: [
+      { id: 'checkbox', title: '', sortable: false, align: 'center', type: 'String', thStyle: { minWidth: '5px', border: '.5px solid #fff' }, width: 20, components: ['checkbox'] },
+      { id: "member_name", title: 'Member Name', sortable: false, align: 'left', type: "String", width: 200, column: "member_name" },
+      { id: "status", title: 'Status Perpustakaan', sortable: false, align: 'left', type: "String", width: 200, column: "status" },
       { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['Process'] }
     ],
-    filters:[
-      { id:"member_name", column: "member_name"},
-      { id:"bebas_pustaka", column: "bebas_pustaka"}
+    filters: [
+      { id: "member_name", column: "member_name" },
+      { id: "bebas_pustaka", column: "bebas_pustaka" }
     ]
   },
-  pagingMemberRent : {
+  pagingMemberRent: {
     select: `
     SELECT
       ROW_NUMBER() OVER () AS nomor,
@@ -250,15 +250,33 @@ const pagings = {
     count: `select count(rent.id) FROM db_rent rent INNER JOIN db_book book ON book.id_book = rent.id_book`,
     orderby: "id DESC",
     search: "",
-    columns:[
-        { id:"nomor", title: 'No', sortable: false, align: 'left', type:"String", width: 200, column:"nomor"},
-        { id:"title", title: 'Nama Buku', sortable: false, align: 'left', type:"String", width: 200, column:"title" },
-        { id:"status_pinjam_deskripsi", title: 'Status', sortable: false, align: 'left', type:"String", width: 200, column:"tgl_join2" },
-        { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['show-qr'] }
-      ],
-    filters:[
-      { id:"id_member", column: "id_member"}
+    columns: [
+      { id: "nomor", title: 'No', sortable: false, align: 'left', type: "String", width: 200, column: "nomor" },
+      { id: "title", title: 'Nama Buku', sortable: false, align: 'left', type: "String", width: 200, column: "title" },
+      { id: "status_pinjam_deskripsi", title: 'Status', sortable: false, align: 'left', type: "String", width: 200, column: "tgl_join2" },
+      { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['show-qr'] }
+    ],
+    filters: [
+      { id: "id_member", column: "id_member" }
     ]
+  },
+  pagingListScheduler: {
+    select: `
+    SELECT
+      id,
+      type,
+      CONCAT(UCASE(SUBSTRING(type, 1, 1)), LOWER(SUBSTRING(type, 2))) AS typeDesc,
+      CONCAT(UCASE(SUBSTRING(status, 1, 1)), LOWER(SUBSTRING(status, 2))) AS status
+    FROM db_scheduler`,
+    count: `select count(id) FROM db_scheduler`,
+    orderby: "id",
+    search: "",
+    columns: [
+      { id: "typeDesc", title: 'Type', sortable: false, align: 'left', type: "String", width: 200, column: "typeDesc" },
+      { id: "status", title: 'Status', sortable: false, align: 'left', type: "String", width: 200, column: "status" },
+      { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['retry'] }
+    ],
+    filters: [{ id: "type", column: "type" }]
   }
 };
 
@@ -292,7 +310,7 @@ const dropdowns = {
     groupBy: 'months.month',
     custom: true,
     filters: [
-      { id:"year", column: "YEAR(db_rent.tgl_pinjam)"},
+      { id: "year", column: "YEAR(db_rent.tgl_pinjam)" },
     ]
   },
   chartMostBookRent: {
@@ -305,11 +323,11 @@ const dropdowns = {
     groupBy: 'rent.id_book, book.title',
     limit: '4',
     filters: [
-      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+      { id: "yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')" },
     ]
   },
   barChartMostUserRent: {
-    selectAll:`
+    selectAll: `
       SELECT 
         member.member_name AS x,
         COUNT(rent.id_member) AS y
@@ -318,7 +336,7 @@ const dropdowns = {
     groupBy: 'id_member',
     limit: 25,
     filters: [
-      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+      { id: "yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')" },
     ]
   },
   chartBookTransaction: {
@@ -341,7 +359,7 @@ const dropdowns = {
       GROUP BY title.x`,
     custom: true,
     filters: [
-      { id:"yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')"},
+      { id: "yearMonth", column: "DATE_FORMAT(rent.tgl_pinjam, '%Y-%m')" },
     ]
   },
   chartRentAndReturn: {
@@ -374,7 +392,7 @@ const dropdowns = {
     groupBy: 'months.month',
     custom: true,
     filters: [
-      { id:"year", column: "YEAR(db_rent.tgl_pinjam)"},
+      { id: "year", column: "YEAR(db_rent.tgl_pinjam)" },
     ]
   },
 };
