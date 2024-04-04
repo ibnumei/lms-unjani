@@ -52,8 +52,9 @@ const fUserLogin = async (req, res, next) => {
 
       if (cacheDateTime < currentDateTime) {
         const where = {
-          id: userId,
-          isActive: true
+          id: userId
+          //  isActive dinonaktifkan karena banyak member expire_date != '0000-00-00' tapi isActive is NULL, sehingga tidak dapat data
+          // isActive: true
         }
         let user = {}
         if (req.decodedJwt.type === "Member") {
@@ -61,7 +62,7 @@ const fUserLogin = async (req, res, next) => {
         } else {
           user = await userDao.getUserAdmin(where);
         }
-
+        
         if (user.token === req.headers.token) {
           userDao[cacheId] = (new Date()).getTime() + 30000;
           next();
