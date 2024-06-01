@@ -206,6 +206,7 @@ const pagings = {
         id,
         member_id,
         member_name,
+        pin,
         bebas_pustaka,
         CASE
             WHEN bebas_pustaka = 1 THEN 'Tidak ada Peminjaman'
@@ -221,7 +222,7 @@ const pagings = {
       { id: 'checkbox', title: '', sortable: false, align: 'center', type: 'String', thStyle: { minWidth: '5px', border: '.5px solid #fff' }, width: 20, components: ['checkbox'] },
       { id: "member_name", title: 'Member Name', sortable: false, align: 'left', type: "String", width: 200, column: "member_name" },
       { id: "status", title: 'Status Perpustakaan', sortable: false, align: 'left', type: "String", width: 200, column: "status" },
-      { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['Process'] }
+      { id: 'action', title: 'Action', sortable: false, align: 'center', type: 'Button', width: 200, components: ['Process', 'Cetak'] }
     ],
     filters: [
       { id: "member_name", column: "member_name" },
