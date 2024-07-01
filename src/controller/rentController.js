@@ -8,10 +8,10 @@ class RentController {
     const transaction = await sequelize.transaction();
     try {
       const payload = req.body;
-      const { title, itemCode } = payload
-      const whereBook = { title: title };
+      const { itemCode } = payload
+      // const whereBook = { title: title };
       const whereItems = { item_code: itemCode };
-      const data = await rentService.searchRentBook(whereBook, whereItems, transaction);
+      const data = await rentService.searchRentBook( whereItems, transaction);
       await transaction.commit();
       res.json({ success: true, data });
     } catch (ex) {

@@ -4,9 +4,9 @@ const { Sequelize } = require('../db');
 const { Op } = require('sequelize');
 
 class RentDao {
-  static searchRentBook(whereBook, whereItems, transaction) {
+  static searchRentBook( whereItems, transaction) {
     return bookBean.findOne({
-      where: whereBook,
+      // where: whereBook,
       include: [
         {
           model: authorBean,

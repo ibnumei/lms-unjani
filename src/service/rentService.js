@@ -8,8 +8,8 @@ const { itemStatus } = require('../util/Enums');
 const API_ROUTE = (type) => `https://deltalibrary.unjani.id/index.php?p=api/loan/${type}`
 
 class RentService {
-  static async searchRentBook(whereBook, whereItems, transaction, fromReturn = false) {
-    let result = await rentDao.searchRentBook(whereBook, whereItems, transaction);
+  static async searchRentBook( whereItems, transaction, fromReturn = false) {
+    let result = await rentDao.searchRentBook( whereItems, transaction);
 
     if (!result) {
       throw new Error('Fail to search rent book')
@@ -145,9 +145,9 @@ class RentService {
     }
     const book = []
     for (const file of dataRent) {
-      const whereBook = { id_book: file.id_book };
+      // const whereBook = { id_book: file.id_book };
       const whereItems = { item_code: file.item_code };
-      const tempBook = await this.searchRentBook(whereBook, whereItems, transaction, true);
+      const tempBook = await this.searchRentBook(whereItems, transaction, true);
       book.push(tempBook)
     }
     return book;
