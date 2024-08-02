@@ -148,7 +148,13 @@ class RentDao {
   static async getQrInfo(kode_pinjam, transaction) {
     return rentBean.findOne({ 
       where: { kode_pinjam },
-      raw: true,
+      include: [
+        {
+          association: rentBean.belongsToMember,
+          model: memberBean,
+          attributes: ['member_id', 'member_name'],
+        }
+      ],
       attributes: ['kode_pinjam', 'tgl_pinjam', 'createdBy'],
       transaction
     });

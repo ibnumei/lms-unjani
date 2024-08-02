@@ -79,9 +79,10 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false
     });
   
-    model.associate = ( {}) => {
+    model.associate = ({ memberBean }) => {
       // model.hasManyBook = model.hasMany(authorBean, { as: 'authors', foreignKey: 'id_book', targetKey: 'id_book'});
       // model.hasManyItems = model.hasMany(itemBean, {as: 'items', foreignKey: 'id_book', targetKey: 'id_book'})
+      model.belongsToMember = model.belongsTo(memberBean, { as: 'member', foreignKey: 'id_member', targetKey: 'id'})
     };
   
     // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
