@@ -13,7 +13,7 @@ class LoginService {
   static async login(body, transaction) {
     let token = {}
     const where = {
-      member_name: body.nama
+      member_id: body.nim
       // isActive: true,
       // expire_date: { [Op.notLike]: `0000-%` }
     }
@@ -52,7 +52,7 @@ class LoginService {
         await userDao.updateToken(payload, transaction, type)
         return token
     }
-    throw new Error('Nama or Password is wrong');
+    throw new Error('NIM or Password is wrong');
   }
 
   static async logout(currentUser, transaction) {
@@ -91,12 +91,12 @@ class LoginService {
         await userDao.updateToken(payload, transaction, type)
         return token
     }
-    throw new Error('Nama or Password is wrong');
+    throw new Error('NIM or Password is wrong');
   }
 
   static async checkLogin(body){
     const where = {
-      member_name: body.nama,
+      member_id: body.nim,
       // isActive: true
     }
     return userDao.getUser(where)
