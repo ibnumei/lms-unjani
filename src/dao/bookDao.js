@@ -12,6 +12,14 @@ class BookDao {
     });
   }
 
+  static updateItem(where, itemToUpdate, transaction) {
+    return itemBean.update(itemToUpdate, { where, raw: true, transaction });
+  }
+
+  static findOneBook(where, transaction) {
+    return bookBean.findOne({ where, transaction });
+  }
+
   static getSingleBook(id, transaction) {
     return bookBean.findOne({ 
       where: { id_book: id } ,

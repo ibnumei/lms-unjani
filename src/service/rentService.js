@@ -1,25 +1,57 @@
+const _ = require('lodash');
 const axios = require('axios');
 const FormData = require('form-data');
-const { rentDao, userDao } = require('../dao/index');
+const { rentDao, userDao, bookDao } = require('../dao/index');
 const { v4: uuidv4 } = require('uuid');
 const { clone } = require('../util/ServerTool');
 const { itemStatus } = require('../util/Enums');
 
-const API_ROUTE = (type) => `https://deltalibrary.unjani.id/index.php?p=api/loan/${type}`
+const API_ROUTE = (type) => `https://deltalibrary.unjani.id/index.php?p=api/loan/${type}`;
+const DELTA_LIBRARY_API = process.env.DELTA_LIBRARY_API;
+const DELTA_LIBRARY_SECRET =  process.env.DELTA_LIBRARY_SECRET;
 
 class RentService {
-  static async searchRentBook( whereItems, transaction, fromReturn = false) {
-    let result = await rentDao.searchRentBook( whereItems, transaction);
+  static async _syncSingleBook(whereItems, transaction) {
+    try {
+      const bookItem = await rentDao.findBookByItem(whereItems, transaction);
+      if (!bookItem || !bookItem.biblio_id || !bookItem.item_code) {
+        return null
+      }
+      const response = await axios.get(`${DELTA_LIBRARY_API}/biblio/1/${DELTA_LIBRARY_SECRET}&id=${bookItem.biblio_id}`);
+      const books = _.get(response, 'data.data', []);
+      const biblio = _.find(books, { biblio_id: bookItem.biblio_id.toString() } || { items: [] } );
+      const item = _.find(biblio.items, { item_code: bookItem.item_code.toString() } || null);
+      if (!item) {
+        return null
+      }
+      if (_.get(bookItem, 'status') !== item.status) {
+        const where = {
+          item_code: item.item_code,
+          id_book: id
+        };
+        const itemToUpdate = {
+          status: item.status
+        };
+        await bookDao.updateItem(where, itemToUpdate);
+      }
+      return item;
+    } catch (error) {
+      console.log('ERROR bookService._syncSingleBook >>> ', error)
+      return null;
+    }
+  }
 
-    if (!result) {
+  static async searchRentBook( whereItems, transaction, fromReturn = false) {
+    let result = await rentDao.searchRentBook( whereItems, transaction)
+    const syncResult = await this._syncSingleBook(whereItems, transaction);
+
+    if (!result || !syncResult) {
       throw new Error('Fail to search rent book')
     }
 
-    result.items.forEach(item => {
-      if (item.status !== itemStatus.AVAILABLE && !fromReturn) {
-        throw new Error('Buku yang dicari saat ini tidak tersedia')
-      }
-    })
+    if (syncResult.status !== itemStatus.AVAILABLE && !fromReturn) {
+      throw new Error('Buku yang dicari saat ini tidak tersedia')
+    }
 
     let tempAuthor = '';
     if (Object.keys(result.authors).length > 0) {
@@ -46,15 +78,6 @@ class RentService {
         status_pinjam: true,
         createdBy: currentUser.member_name
       }
-      // {
-      //   kode_pinjam: uuid,
-      //   id_member:  currentUser.id,
-      //   id_book: payload[1].id_book,
-      //   item_code: payload[1].item_code,
-      //   tgl_pinjam: new Date(),
-      //   status_pinjam: true,
-      //   createdBy: currentUser.member_name
-      // }
     ]
 
     const form = new FormData()
@@ -78,6 +101,17 @@ class RentService {
 
     await rentDao.rentBook(newPayload, transaction);
     await this.saveToOldService(form, 'loaning');
+    
+    const promisesSyncBook = [];
+    newPayload.forEach((item) => {
+      if (item.item_code) {
+        promisesSyncBook.push(
+          this._syncSingleBook({ item_code: item.item_code })
+        )
+      }
+    })
+
+    await Promise.all(promisesSyncBook);
 
     //set bebas_pustaka false, specific member by id when rent books
     await userDao.setBebasPustaka([currentUser.id], transaction, false)
@@ -108,11 +142,18 @@ class RentService {
 
     const form = new FormData()
     form.append('member_key', currentUser.member_id)
+    const promisesSyncBook = [];
     dataRentBook.forEach(rentBook => {
       form.append('item_code[]', rentBook.item_code)
+      if (rentBook.item_code) {
+        promisesSyncBook.push(
+          this._syncSingleBook({ item_code: rentBook.item_code })
+        )
+      }
     })
 
     await this.saveToOldService(form, 'return');
+    await Promise.all(promisesSyncBook);
 
     await this.isMemberStillLoan(dataRentBook[0].id_member, transaction)
     return

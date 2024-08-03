@@ -21,6 +21,25 @@ class RentDao {
       transaction
     });
   }
+bookBean
+  static findBookByItem(whereItem, transaction) {
+    return itemBean.findOne({
+      where: whereItem,
+      attributes: [
+        ...itemBean.attributes,
+        [Sequelize.literal('`book`.`biblio_id`'), 'biblio_id']
+      ],
+      include: [
+        {
+          association: itemBean.belongsToBoook,
+          model: bookBean,
+          attributes: [],
+        }
+      ],
+      raw: true,
+      transaction
+    })
+  }
 
   static rentBook(newPayload, transaction) {
     const attributes = ['id', 'kode_pinjam', 'id_member', 'id_book', 'item_code', 'tgl_pinjam', 'status_pinjam', 'createdBy'];
@@ -77,7 +96,6 @@ class RentDao {
   }
 
   static async getListTransaction(where) {
-    console.log(where)
     const rawQuery = `
     select
       rent.id,

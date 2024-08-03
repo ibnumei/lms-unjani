@@ -4,6 +4,8 @@ const { bookBean, itemBean, authorBean } = require('../db/index');
 const axios = require('axios');
 const { Sequelize } = require('../db');
 const { Op } = Sequelize;
+const DELTA_LIBRARY_API = process.env.DELTA_LIBRARY_API;
+const DELTA_LIBRARY_SECRET =  process.env.DELTA_LIBRARY_SECRET;
 
 class BookService {
   static async getBook(page, size, title, sortBy, order) {
@@ -37,16 +39,44 @@ class BookService {
   };
 
   static async getSingleBook(id) {
+    await this._syncSingleBook(id);
     return bookDao.getSingleBook(id);
+  }
+
+  static async _syncSingleBook(id) {
+    try {
+      const dbBook = await bookDao.findOneBook({ id_book: id });
+      if (!dbBook.biblio_id) {
+        return;
+      }
+      const response = await axios.get(`${DELTA_LIBRARY_API}/biblio/1/${DELTA_LIBRARY_SECRET}&id=${dbBook.biblio_id}`);
+      const books = _.get(response, 'data.data', []);
+      const promisesUpdateItems = [];
+      books.forEach((book) => {
+        const items = _.get(book, 'items', []);
+        items.forEach((item) => {
+          const where = {
+            item_code: item.item_code,
+            id_book: id
+          };
+          const itemToUpdate = {
+            status: item.status
+          };
+          promisesUpdateItems.push(
+            bookDao.updateItem(where, itemToUpdate)
+          );
+        })
+      });
+      return Promise.all(promisesUpdateItems);
+    } catch (error) {
+      console.log('ERROR bookService._syncSingleBook >>> ', error)
+    }
   }
 
   static async syncBook(transaction, seq = 1, limitpage = 1){
     let currentPage = seq;
     let maxPage = limitpage;
     const gettersPromise = [];
-
-    const DELTA_LIBRARY_API = process.env.DELTA_LIBRARY_API;
-    const DELTA_LIBRARY_SECRET =  process.env.DELTA_LIBRARY_SECRET
 
     for(currentPage; currentPage <= maxPage; currentPage++) {
       gettersPromise.push(axios.get(`${DELTA_LIBRARY_API}/biblio/${currentPage}/${DELTA_LIBRARY_SECRET}`))
