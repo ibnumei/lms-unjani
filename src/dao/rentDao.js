@@ -27,7 +27,8 @@ bookBean
       where: whereItem,
       attributes: [
         ...itemBean.attributes,
-        [Sequelize.literal('`book`.`biblio_id`'), 'biblio_id']
+        [Sequelize.literal('`book`.`biblio_id`'), 'biblio_id'],
+        [Sequelize.literal('`book`.`title`'), 'title']
       ],
       include: [
         {

@@ -34,7 +34,10 @@ class RentService {
         };
         await bookDao.updateItem(where, itemToUpdate);
       }
-      return item;
+      return {
+        ...item,
+        title: bookItem.title
+      };
     } catch (error) {
       console.log('ERROR bookService._syncSingleBook >>> ', error)
       return null;
@@ -99,9 +102,6 @@ class RentService {
       form.append('item_code[]', payload[1].item_code)
     }
 
-    await rentDao.rentBook(newPayload, transaction);
-    await this.saveToOldService(form, 'loaning');
-    
     const promisesSyncBook = [];
     newPayload.forEach((item) => {
       if (item.item_code) {
@@ -111,7 +111,17 @@ class RentService {
       }
     })
 
-    await Promise.all(promisesSyncBook);
+    // Validasi ketersediaan buku
+    const resultSyncBook = await Promise.all(promisesSyncBook);
+    resultSyncBook.forEach((book) => {
+      if (book.status !== itemStatus.AVAILABLE) {
+        throw new Error(`Buku "${book.title}" saat ini tidak tersedia`)
+      }
+    })
+
+    await rentDao.rentBook(newPayload, transaction);
+    await this.saveToOldService(form, 'loaning');
+    await Promise.all(promisesSyncBook); // Update Terakhir setelah pinjam
 
     //set bebas_pustaka false, specific member by id when rent books
     await userDao.setBebasPustaka([currentUser.id], transaction, false)
