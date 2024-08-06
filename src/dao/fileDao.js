@@ -9,6 +9,10 @@ class FileDao {
   static getFile(id) {
     return fileBean.findOne({ where: { id } });
   }
+
+  static getBanner() {
+    return fileBean.findAll();
+  }
 }
 
 module.exports = FileDao;

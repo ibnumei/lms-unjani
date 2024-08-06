@@ -7,9 +7,24 @@ module.exports = (sequelize, DataTypes) => {
       field: 'id',
       allowNull: false
     },
-    dataId: {
+    secondary_id: {
       type: DataTypes.BIGINT,
-      field: 'dataId',
+      field: 'secondary_id',
+      allowNull: true
+    },
+    category: {
+      type: DataTypes.STRING,
+      field: 'category',
+      allowNull: true
+    },
+    file_name: {
+      type: DataTypes.STRING,
+      field: 'file_name',
+      allowNull: true
+    },
+    file_type: {
+      type: DataTypes.STRING,
+      field: 'file_type',
       allowNull: true
     },
     file: {
@@ -17,72 +32,41 @@ module.exports = (sequelize, DataTypes) => {
       field: 'file',
       allowNull: true
     },
-    fileName: {
-      type: DataTypes.STRING,
-      field: 'file_name',
-      allowNull: true
-    },
-    mimetype: {
-      type: DataTypes.STRING,
-      field: 'mimetype',
-      allowNull: true
-    },
-    url: {
-      type: DataTypes.STRING,
-      field: 'url',
-      allowNull: true
-    },
-    retry: {
-      type: DataTypes.BIGINT,
-      field: 'retry',
-      allowNull: true
-    },
-    uploaded: {
-      type: DataTypes.BOOLEAN,
-      field: 'uploaded',
-      allowNull: true
-    },
-    isActive: {
+    is_active: {
       type: DataTypes.BOOLEAN,
       field: 'is_active',
       allowNull: true
     },
-    modifiedDate: {
+    modified_date: {
       type: DataTypes.DATE,
       field: 'modified_date',
       allowNull: true
     },
-    modifiedBy: {
+    modified_by: {
       type: DataTypes.STRING,
       field: 'modified_by',
       allowNull: true
     },
-    createdDate: {
+    created_date: {
       type: DataTypes.DATE,
       field: 'created_date',
       allowNull: true
     },
-    createdBy: {
+    created_by: {
       type: DataTypes.STRING,
       field: 'created_by',
       allowNull: true
     }
   }, {
-    tableName: 'dlos_app_file',
-    timestamps: false,
-    indexes: [
-      {
-        unique: false,
-        fields: ['dataId']
-      }
-    ]
+    tableName: 'db_file',
+    timestamps: false
   });
 
   model.associate = () => {
   };
 
   // Terkecuali createdDate, createdBy, modifiedDate, modifiedBy
-  model.attributes = ['id', 'dataId', 'file', 'fileName', 'mimetype', 'url', 'retry', 'uploaded', 'isActive'];
+  model.attributes = ['id', 'secondary_id', 'category', 'file_name', 'file_type', 'file', 'is_active'];
 
   return model;
 };
