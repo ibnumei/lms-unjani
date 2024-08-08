@@ -48,11 +48,15 @@ class RentService {
     let result = await rentDao.searchRentBook( whereItems, transaction)
     const syncResult = await this._syncSingleBook(whereItems, transaction);
 
-    if (!result || !syncResult) {
+    if (!result) {
       throw new Error('Fail to search rent book')
     }
 
-    if (syncResult.status !== itemStatus.AVAILABLE && !fromReturn) {
+    if (_.get(syncResult, 'status') && _.get(syncResult, 'status') !== itemStatus.AVAILABLE && !fromReturn) {
+      throw new Error('Buku yang dicari saat ini tidak tersedia')
+    }
+
+    if (_.get(result, 'status') && _.get(result, 'status') !== itemStatus.AVAILABLE && !fromReturn) {
       throw new Error('Buku yang dicari saat ini tidak tersedia')
     }
 
